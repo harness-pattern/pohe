@@ -184,6 +184,28 @@ class SiteIntegrityTests(unittest.TestCase):
         for page in (ROOT / "index.html", ROOT / "inventory.html", ROOT / "method.html", ROOT / "patterns" / "P01" / "index.html"):
             self.assertIn("agent.html", page.read_text(encoding="utf-8"))
 
+    def test_experiments_page_states_both_results_and_their_boundary(self) -> None:
+        text, parser = parse_document(ROOT / "experiments.html")
+        self.assertTrue(parser.has_main)
+        for phrase in (
+            "Two runs.",
+            "The frozen 2×2 run.",
+            "Making the interaction estimable.",
+            "Enforcement supported",
+            "Interaction: no exposure",
+            "Interaction supported",
+            "neither is a field result",
+            "0.972",
+            "0.889 to 1.000",
+            "deepseek/deepseek-flash",
+            "results_coupled/decision.md",
+        ):
+            self.assertIn(phrase, text)
+        self.assertIn('href="experiments.html" aria-current="page"', text)
+        self.assertEqual(parser.external_scripts, [])
+        home = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('href="experiments.html"', home)
+
     def test_catalog_search_filters_and_empty_state(self) -> None:
         text, parser = parse_document(ROOT / "index.html")
         self.assertEqual(parser.pattern_rows, 52)
@@ -237,7 +259,7 @@ class SiteIntegrityTests(unittest.TestCase):
                 self.assertIn('href="../../paper.html#research-agenda"', detail_text)
 
     def test_page_metadata_and_accessibility_shell(self) -> None:
-        pages = [ROOT / "index.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
+        pages = [ROOT / "index.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "experiments.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
         for page in pages:
             with self.subTest(page=page.relative_to(ROOT)):
                 text, parser = parse_document(page)
@@ -255,7 +277,7 @@ class SiteIntegrityTests(unittest.TestCase):
                 self.assertIn("About me", text)
 
     def test_all_local_html_references_resolve(self) -> None:
-        pages = [ROOT / "index.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
+        pages = [ROOT / "index.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "experiments.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
         for page in pages:
             _, parser = parse_document(page)
             for reference in parser.references:
@@ -359,7 +381,7 @@ class SiteIntegrityTests(unittest.TestCase):
         self.assertNotIn("<image", svg)
         self.assertNotRegex(svg, r'(?:href|src)="(?:https?:|//)')
 
-    def test_primary_navigation_has_exactly_four_approved_entries(self) -> None:
+    def test_primary_navigation_has_approved_entries(self) -> None:
         for page in ROOT.rglob("*.html"):
             with self.subTest(page=page.relative_to(ROOT)):
                 text = page.read_text(encoding="utf-8")
@@ -369,11 +391,17 @@ class SiteIntegrityTests(unittest.TestCase):
                 for anchor in re.findall(r"<a\b[^>]*>(.*?)</a>", match.group(0), re.S):
                     anchor = re.sub(r"<(sup|span)\b.*?</\1>", "", anchor, flags=re.S)
                     labels.append(html.unescape(re.sub(r"<[^>]+>", "", anchor)).strip())
-                self.assertEqual(labels, ["Catalog", "Agent", "Paper", "About me"])
+                self.assertEqual(labels, ["Catalog", "Agent", "Experiments", "Paper", "About me"])
                 paper_link = re.search(r'<a class="paper-link" href="([^"]+)"', match.group(0))
                 self.assertIsNotNone(paper_link)
                 expected_paper_href = "paper.html" if page.parent == ROOT else "../../paper.html"
                 self.assertEqual(paper_link.group(1), expected_paper_href)
+                experiments_link = re.search(r'<a href="([^"]+)"[^>]*>Experiments</a>', match.group(0))
+                self.assertIsNotNone(experiments_link)
+                expected_experiments_href = (
+                    "experiments.html" if page.parent == ROOT else "../../experiments.html"
+                )
+                self.assertEqual(experiments_link.group(1), expected_experiments_href)
 
     def test_support_files_and_javascript_wiring(self) -> None:
         for relative in (

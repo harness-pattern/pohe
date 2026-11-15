@@ -4636,3 +4636,232 @@ body::before {
 .record-hypothesis:hover {
   border-color: currentColor;
 }
+
+/* ---------- Experiments page ---------- */
+
+.experiments-page .method-hero h1 {
+  font-size: clamp(42px, 6.4vw, 78px);
+}
+
+.experiments-page .fact-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.experiment-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.experiment-steps > div {
+  border-top: 2px solid var(--ink);
+  padding-top: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.experiment-steps b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.table-wrap {
+  margin: 20px 0 14px;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+
+.metric-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.metric-table th,
+.metric-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--rule-soft);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.metric-table thead th {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: var(--paper-sunk);
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+.metric-table tbody td:first-child {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.metric-table td.num,
+.metric-table th.num {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.metric-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.verdict-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 4px 0 18px;
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.verdict::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.verdict.yes {
+  color: var(--mint);
+  background: var(--mint-soft);
+}
+
+.verdict.open {
+  color: var(--ink-faint);
+  background: var(--paper-sunk);
+}
+
+.interaction-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 20px 0 16px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.interaction-panel > div {
+  padding: 16px 18px;
+  background: var(--paper-raised);
+}
+
+.interaction-panel span {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+
+.interaction-panel b {
+  display: block;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.interaction-panel small {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+.interaction-panel .interaction-total {
+  background: var(--accent-soft);
+}
+
+.interaction-panel .interaction-total b {
+  color: var(--accent);
+}
+
+.experiment-boundary {
+  margin: 18px 0;
+}
+
+.experiment-link {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-soft);
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+
+.experiments-page .limitations-list {
+  margin-top: 10px;
+}
+
+@media (max-width: 780px) {
+  .experiment-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .interaction-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .experiment-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 780px) {
+  .experiments-page .fact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .experiments-page .fact-grid {
+    grid-template-columns: 1fr;
+  }
+}

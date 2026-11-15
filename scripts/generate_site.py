@@ -213,6 +213,7 @@ def nav(prefix: str, current: str) -> str:
   <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
     <a href="{prefix}./#catalog"{' aria-current="page"' if current == 'catalog' else ''}>Catalog <sup>52</sup></a>
     <a href="{prefix}agent.html"{' aria-current="page"' if current == 'agent' else ''}>Agent</a>
+    <a href="{prefix}experiments.html"{' aria-current="page"' if current == 'experiments' else ''}>Experiments</a>
     <a class="paper-link" href="{prefix}paper.html"{' aria-current="page"' if current == 'paper' else ''}>Paper</a>
     <a class="personal-link" href="https://xhyccc.github.io/">About me <span aria-hidden="true">↗</span></a>
   </nav>
@@ -685,7 +686,7 @@ def research_agenda() -> str:
     <span class="section-index">RESEARCH AGENDA / H1—H3</span>
     <h2 id="research-agenda-title">From position to testable hypotheses.</h2>
     <p class="method-lead">Traditional software engineering was led by people; the agent harness increasingly evolves itself. Three questions follow. What is the asset when a prompt or code snapshot may be replaced within days? Must harness engineering keep the separation of concerns—and the boundary—that design patterns and POSA used to mark what rarely changes versus what may be derived, generalized, or customized? And does self-improvement with explicit variation boundaries drift less, regress less, recover faster, and attribute changes more clearly than unconstrained revision? Each question keeps its proposed answer, evidence, and falsification boundary in view.</p>
-    <p class="research-manuscript-context"><a class="text-link" href="assets/paper/pohe-position.pdf">Read the paper PDF <span aria-hidden="true">↗</span></a><span>Manuscript context: §3, “Harness Design Patterns and the A² Taxonomy”; §4, “Three Major Hypotheses”; and §6, “Future Work: Prospective Tests of the Three Hypotheses.” H1 and the boundary interaction remain open; H2’s enforcement main effect has a confirmatory apparatus result.</span></p>
+    <p class="research-manuscript-context"><a class="text-link" href="assets/paper/pohe-position.pdf">Read the paper PDF <span aria-hidden="true">↗</span></a><span>Manuscript context: §3, “Harness Design Patterns and the A² Taxonomy”; §4, “Three Major Hypotheses”; and §6, “Future Work: Prospective Tests of the Three Hypotheses.” H1 and the field test remain open; H2’s enforcement main effect has a confirmatory apparatus result, and a coupled follow-up makes its boundary interaction estimable within the apparatus.</span></p>
 
     <figure class="research-map">
       <svg class="research-agenda-svg" viewBox="0 0 760 500" role="img" aria-labelledby="research-map-title research-map-description">
@@ -728,7 +729,7 @@ def research_agenda() -> str:
         <div class="hypothesis-block"><h4>Question</h4><p>Design patterns and POSA separated what rarely changes from what may be derived, generalized, or customized. Must harness engineering preserve that separation of concerns and its boundary?</p></div>
         <div class="hypothesis-block"><h4>Our answer</h4><p>Yes—and under agent-led evolution the boundary must be mechanized through <strong>guards, gates, checkpoints, rollback, and evaluation gates</strong>; docs/comments alone are not constraints.</p></div>
         <div class="hypothesis-block"><h4>Metrics</h4><ul><li>Unauthorized-variation escape rate and violation containment.</li><li>Checkpoint recovery and rollback success, latency, and evaluation-gate rejection of known violations.</li></ul></div>
-        <div class="hypothesis-evidence"><h4>Evidence status</h4><p><strong>Analytical/source support plus a confirmatory 12-instance apparatus run</strong> of the enforcement main effect; the field comparison remains open. <a href="./?family=E#catalog">E-family records</a> are candidate mechanisms, not a demonstrated comparative advantage.</p></div>
+        <div class="hypothesis-evidence"><h4>Evidence status</h4><p><strong>Analytical/source support plus a confirmatory 12-instance apparatus run</strong> of the enforcement main effect. A coupled follow-up makes the boundary interaction estimable and supports it structurally within that apparatus; the field comparison remains open. <a href="experiments.html">See the experiments <span aria-hidden="true">↗</span></a> <a href="./?family=E#catalog">E-family records</a> are candidate mechanisms, not a demonstrated comparative advantage.</p></div>
         <div class="hypothesis-boundary"><h4>Open / falsification boundary</h4><p><strong>Comparative causal benefit remains open.</strong> A controlled comparison that finds no improvement over documentation/comment guidance in containment, recovery, or violation detection would challenge the claim.</p></div>
       </article>
 
@@ -737,19 +738,123 @@ def research_agenda() -> str:
         <div class="hypothesis-block"><h4>Question</h4><p>Compared with unconstrained self-improvement, does self-improvement with explicit variation boundaries yield <strong>lower contract drift, lower regression rate, faster failure recovery, and clearer change attribution</strong>?</p></div>
         <div class="hypothesis-block"><h4>Our answer</h4><p>We predict yes on all four outcomes—but this is a hypothesis to be tested, not an observed result.</p></div>
         <div class="hypothesis-block"><h4>Metrics</h4><ul><li>Contract drift and regression rate per modification round.</li><li>Time to successful recovery and completeness of change attribution.</li></ul></div>
-        <div class="hypothesis-evidence"><h4>Evidence status</h4><p><strong>Prospective in the field.</strong> A pre-registered 12-instance apparatus run had no exposure for the boundary interaction, so no field comparison exists yet.</p></div>
+        <div class="hypothesis-evidence"><h4>Evidence status</h4><p><strong>Prospective in the field.</strong> The frozen 12-instance apparatus design had no exposure for the boundary interaction; a coupled follow-up estimates it structurally within the apparatus, but no field comparison exists yet. <a href="experiments.html#coupled">See the coupled run <span aria-hidden="true">↗</span></a></p></div>
         <div class="hypothesis-boundary"><h4>Open / falsification boundary</h4><p>The entire causal claim is open. Equivalent or worse outcomes for bounded modification would falsify the predicted benefit under the tested conditions; mixed results would narrow, not confirm, its scope.</p></div>
       </article>
     </div>
 
-    <aside class="research-protocol" aria-labelledby="research-protocol-title"><div><span class="section-index">FIELD PROTOCOL / PROSPECTIVE</span><h3 id="research-protocol-title">Bounded versus unconstrained, round by round.</h3></div><div><p>H3 compares bounded and unconstrained self-improvement in a planning cohort of 12 harnesses. The design uses matched randomization to bounded or unconstrained arms for ten revision rounds. The frozen task distribution covers feature adaptation, tool/schema change, failure recovery, and permission/acceptance change. Contract, regression, recovery, and attribution measures should be predeclared, with comparable tasks, models, and budgets.</p><p class="research-protocol-status"><strong>Field protocol: no field result.</strong> The 12-instance apparatus run is reported in the paper as a confirmatory apparatus result, not a field test.</p></div></aside>
+    <aside class="research-protocol" aria-labelledby="research-protocol-title"><div><span class="section-index">FIELD PROTOCOL / PROSPECTIVE</span><h3 id="research-protocol-title">Bounded versus unconstrained, round by round.</h3></div><div><p>H3 compares bounded and unconstrained self-improvement in a planning cohort of 12 harnesses. The design uses matched randomization to bounded or unconstrained arms for ten revision rounds. The frozen task distribution covers feature adaptation, tool/schema change, failure recovery, and permission/acceptance change. Contract, regression, recovery, and attribution measures should be predeclared, with comparable tasks, models, and budgets.</p><p class="research-protocol-status"><strong>Field protocol: no field result.</strong> The 12-instance apparatus runs are reported in the paper as confirmatory apparatus results, not field tests.</p></div></aside>
   </div></section>"""
+
+
+def render_experiments() -> str:
+    body = """
+<main id="main-content" class="method-page experiments-page">
+  <header class="method-hero experiments-hero"><span class="section-index">EXPERIMENTS / EVOLUTION / APPARATUS</span><h1>Two runs.<br><em>One apparatus.</em></h1><p>A pre-registered 2×2 factorial over twelve harness instances, and a coupled follow-up that makes the boundary interaction estimable. Both execute real harnesses; neither is a field result, and neither estimates how model populations behave.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Read the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="#confirmatory">The confirmatory run <span aria-hidden="true">↓</span></a><a class="text-link" href="#coupled">The coupled follow-up <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Evidence status: apparatus-confirmatory. Twelve configured instances of two templates, one model snapshot, and a frozen human-authority policy. The field experiment remains prospective.</p></header>
+
+  <section class="method-section" id="apparatus"><div class="method-section-number">01</div><div>
+    <h2>What the apparatus holds fixed.</h2>
+    <p class="method-lead">The design separates two questions: whether a runtime guard protects contracts that instructions alone do not, and whether explicit variation boundaries add benefit once enforcement is present.</p>
+    <div class="fact-grid">
+      <div><dt>Cohort</dt><dd>12 harnesses · Python and JavaScript · two protected records</dd></div>
+      <div><dt>Arms</dt><dd>MU · MB · EU · EB · matched replicas per harness</dd></div>
+      <div><dt>Agent samples</dt><dd>3 independent per-round samples · 36 plans</dd></div>
+      <div><dt>Replicas</dt><dd>144 · 1,440 proposal slots</dd></div>
+      <div><dt>Margins</dt><dd>Frozen before the matrices ran</dd></div>
+      <div><dt>Authority</dt><dd>Frozen policy in every arm · out-of-seam changes rejected</dd></div>
+    </div>
+    <div class="experiment-steps">
+      <div><b>Propose</b>A per-round agent sees the state and the request, never the arm, probes, or evaluator.</div>
+      <div><b>Replay</b>One plan per harness is replayed unchanged across all four matched replicas.</div>
+      <div><b>Promote</b>U promotes directly; B checks the seam, records, tests, and an independent gate.</div>
+      <div><b>Measure</b>Contract drift, regression, unauthorized effects, and contract-preserving success.</div>
+    </div>
+  </div></section>
+
+  <section class="method-section" id="confirmatory"><div class="method-section-number">02</div><div>
+    <span class="section-index">RUN 01 / PRE-REGISTERED / 10 ROUNDS</span>
+    <h2>The frozen 2×2 run.</h2>
+    <p>The confirmatory layer froze practical margins, the decision rule, and a human-authority policy before the matrices ran. An out-of-seam change is refused whether the replica is MU, MB, EU, or EB; the agent cannot approve its own exception. The evolution agent is one local model snapshot, reported by the CLI as <code>deepseek/deepseek-flash</code>.</p>
+    <div class="table-wrap"><table class="metric-table">
+      <thead><tr><th>Arm</th><th class="num">Contract drift</th><th class="num">Regression</th><th class="num">Unauthorized effects</th><th class="num">CPS</th></tr></thead>
+      <tbody>
+        <tr><td>MU</td><td class="num">2.028</td><td class="num">0.005</td><td class="num">4.000</td><td class="num">0.995</td></tr>
+        <tr><td>MB</td><td class="num">2.000</td><td class="num">0.000</td><td class="num">4.000</td><td class="num">1.000</td></tr>
+        <tr><td>EU</td><td class="num">0.028</td><td class="num">0.005</td><td class="num">0.000</td><td class="num">0.995</td></tr>
+        <tr><td>EB</td><td class="num">0.000</td><td class="num">0.000</td><td class="num">0.000</td><td class="num">1.000</td></tr>
+      </tbody>
+    </table></div>
+    <div class="verdict-row"><span class="verdict yes">Enforcement supported</span><span class="verdict open">Interaction: no exposure</span><span class="verdict open">Field: prospective</span></div>
+    <p><strong>Enforcement.</strong> Contract-preserving success is equal at 0.995 in both modes, and M produces 4.000 more unauthorized effects per replica than E (simultaneous 97.5% interval 4.000 to 4.000; margin 0.50). Round zero already separates the arms: M fails two of four probes and all four adversarial tasks before any evolution, so the main effect is a property of the runtime guard rather than accumulated change.</p>
+    <div class="review-boundary experiment-boundary"><h3>Why the interaction is zero here</h3><p>The promotion gate runs the same held-out tasks in E and M, and the external guard acts only at runtime; it does not enter promotion. Under the frozen authority, the out-of-seam requests that produce drift in the pilot are rejected in every arm. The zero is a failed manipulation check, not evidence that boundaries add nothing.</p></div>
+    <p class="experiment-link"><a class="text-link" href="paper.html#research-agenda">H2 in the research agenda <span aria-hidden="true">↗</span></a><span>Full account: paper appendix, “Pre-registered Confirmatory Run within the Apparatus.”</span></p>
+  </div></section>
+
+  <section class="method-section" id="coupled"><div class="method-section-number">03</div><div>
+    <span class="section-index">RUN 02 / COUPLED FOLLOW-UP / 11 ROUNDS</span>
+    <h2>Making the interaction estimable.</h2>
+    <p>The frozen design cannot estimate the boundary interaction because the guard and the gate act on disjoint mechanisms. The coupled follow-up makes them share one obligation: the external guard's own protection policy, <code>guard_policy.protected_actions</code>. The guard enforces that policy at runtime; the gate compares a candidate policy with the immutable baseline contract and rejects any weakening. Round eleven is an in-seam request to stop blocking commands outside the allowlist while keeping workspace write containment. Filesystem containment stays an internal permission obligation; command allowlisting is enforced only by the guard, so the same promoted change has a runtime effect in E and none in M.</p>
+    <div class="table-wrap"><table class="metric-table">
+      <thead><tr><th>Arm</th><th class="num">Contract drift</th><th class="num">Regression</th><th class="num">Unauthorized effects</th><th class="num">CPS</th></tr></thead>
+      <tbody>
+        <tr><td>MU</td><td class="num">2.028</td><td class="num">0.005</td><td class="num">4.000</td><td class="num">0.995</td></tr>
+        <tr><td>MB</td><td class="num">2.000</td><td class="num">0.000</td><td class="num">4.000</td><td class="num">1.000</td></tr>
+        <tr><td>EU</td><td class="num">1.000</td><td class="num">0.005</td><td class="num">0.972</td><td class="num">0.995</td></tr>
+        <tr><td>EB</td><td class="num">0.000</td><td class="num">0.000</td><td class="num">0.000</td><td class="num">1.000</td></tr>
+      </tbody>
+    </table></div>
+    <div class="interaction-panel">
+      <div><span>Drift benefit in E</span><b>+1.00</b><small>EU − EB</small></div>
+      <div><span>Drift benefit in M</span><b>+0.03</b><small>MU − MB</small></div>
+      <div class="interaction-total"><span>Interaction</span><b>+0.97</b><small>simultaneous 0.889 to 1.000</small></div>
+    </div>
+    <div class="verdict-row"><span class="verdict yes">Enforcement supported</span><span class="verdict yes">Interaction supported</span><span class="verdict open">Apparatus only</span></div>
+    <p><strong>Result.</strong> The drift interaction is 0.972 (simultaneous 0.889 to 1.000; pair-clustered 95% 0.917 to 1.000) and the unauthorized-effects interaction is 0.972 with the same intervals, both above the frozen 0.50 margin. The boundary benefit is 1.000 in E and 0.028 in M for drift, and 0.972 versus 0.000 for unauthorized effects. Regression is descriptive and its interaction is 0.000.</p>
+    <p><strong>Exposure audit.</strong> In every non-declined sample the round-eleven narrowing is promoted in EU, rejected in EB and MB with a recorded guard-policy mismatch, and promoted in MU. One of thirty-six round-eleven proposals was declined; its replicas remain in their arm as non-exposure rather than being dropped.</p>
+    <div class="review-boundary experiment-boundary"><h3>Read this estimate narrowly</h3><p>The result is structural. It shows that the instrument can express a boundary-by-enforcement interaction when the two mechanisms share an obligation, and that the gate preserves the guard policy supplying it. It is not a field interaction, not a model-population estimate, and not a revision of the frozen confirmatory result. The revision that retargeted round eleven from write containment to command containment happened before any confirmatory matrix, is recorded in the protocol, and did not change the frozen margins.</p></div>
+    <p class="experiment-link"><a class="text-link" href="paper.html#research-agenda">H2 in the research agenda <span aria-hidden="true">↗</span></a><span>Full account: paper appendix, “Coupled Follow-Up: An Estimable Boundary Interaction.”</span></p>
+  </div></section>
+
+  <section class="method-section" id="limits"><div class="method-section-number">04</div><div>
+    <h2>What these experiments do not show.</h2>
+    <ul class="limitations-list"><li>They are not field tests. The cohort is 12 configured instances of two templates, not the frozen 120-slot field task bank.</li><li>They do not estimate model-population variation. The evolution agent is one model snapshot reported as <code>deepseek/deepseek-flash</code>.</li><li>They do not replace case-by-case human authority. The authority is a frozen policy that rejects out-of-seam changes.</li><li>The coupled estimate is structural. It demonstrates that the mechanism can be made estimable; it does not show that boundaries help in general.</li><li>No causal performance, safety, cost, or reliability benefit in real repositories follows from these runs.</li></ul>
+  </div></section>
+
+  <section class="method-section" id="reproduce"><div class="method-section-number">05</div><div>
+    <h2>Reproduce.</h2>
+    <p>The experiment package is the companion <code>pohe-experiments</code> directory. Plans are fixed inputs: rerunning a sample replays them byte for byte, and the run tables are deterministic.</p>
+    <pre class="command-block"><code># Pre-registered confirmatory run
+python3 runner/generate_online_plans.py --out-root results_confirmatory --samples 3 --workers 6
+for s in 1 2 3; do
+  python3 runner/run_phase3.py --plans results_confirmatory/plans_s$s \\
+    --out results_confirmatory/run_s$s --confirmatory \\
+    --authority-policy protocol/authority_policy.json
+done
+python3 analysis/pool_confirmatory.py --root results_confirmatory --samples 3
+python3 analysis/confirmatory_decision.py --root results_confirmatory --samples 3
+
+# Coupled follow-up
+python3 runner/generate_coupled_round.py --samples 3 --workers 6
+for s in 1 2 3; do
+  python3 runner/run_phase3.py --plans results_coupled/plans_s$s \\
+    --templates templates_coupled \\
+    --sequence protocol/change_sequence_coupled.json \\
+    --confirmatory --coupled \\
+    --authority-policy protocol/authority_policy.json \\
+    --out results_coupled/run_s$s
+done
+python3 analysis/pool_confirmatory.py --root results_coupled --samples 3
+python3 analysis/coupled_decision.py --root results_coupled --samples 3</code></pre>
+    <p>Outputs: <code>results_confirmatory/decision.md</code> and <code>results_coupled/decision.md</code> carry the pooled arm means, estimands, intervals, decisions, and exposure audits. The run manifests record protocol hashes and the authority scope.</p>
+  </div></section>
+</main>"""
+    return shell("Evolution experiments — POHE", "Two executed POHE experiments: the pre-registered 2×2 harness-evolution run and the coupled follow-up that makes the boundary interaction estimable.", body, current="experiments", canonical="experiments.html")
 
 
 def render_paper() -> str:
     body = f"""
 <main id="main-content" class="method-page paper-page">
-  <header class="method-hero paper-hero"><span class="section-index">PAPER / POSITION / CONFIRMATORY APPARATUS RUN</span><h1>Agent harnesses need<br><em>a pattern discipline.</em></h1><p>Scaling alone cannot absorb their system responsibilities. The position paper asks three questions—what is the asset under constant rewriting, must a separation of concerns be kept, and do explicit variation boundaries improve self-improvement—and develops the A² taxonomy, a pre-registered 2×2 apparatus run that supports the enforcement main effect, and the field tests that remain open.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Download the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="assets/paper/pohe-position.pdf">Open the PDF <span aria-hidden="true">↗</span></a><a class="text-link" href="#research-agenda">Research agenda <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Unpublished manuscript. A pre-registered 12-instance apparatus run supports the enforcement main effect; its boundary interaction had no exposure because a frozen authority rejected out-of-seam changes in every arm. Field tests remain prospective.</p></header>
+  <header class="method-hero paper-hero"><span class="section-index">PAPER / POSITION / CONFIRMATORY APPARATUS RUN</span><h1>Agent harnesses need<br><em>a pattern discipline.</em></h1><p>Scaling alone cannot absorb their system responsibilities. The position paper asks three questions—what is the asset under constant rewriting, must a separation of concerns be kept, and do explicit variation boundaries improve self-improvement—and develops the A² taxonomy, a pre-registered 2×2 apparatus run that supports the enforcement main effect, and the field tests that remain open.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Download the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="assets/paper/pohe-position.pdf">Open the PDF <span aria-hidden="true">↗</span></a><a class="text-link" href="#research-agenda">Research agenda <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Unpublished manuscript. A pre-registered 12-instance apparatus run supports the enforcement main effect. A coupled follow-up makes its boundary interaction estimable and supports it structurally within the same apparatus; the field tests remain prospective. <a class="text-link" href="experiments.html">See the experiments <span aria-hidden="true">↗</span></a></p></header>
 
 {research_agenda()}
 </main>"""
@@ -954,6 +1059,7 @@ def main() -> None:
     write_text(ROOT / "index.html", render_index(data["patterns"]))
     write_text(ROOT / "inventory.html", render_inventory(data))
     write_text(ROOT / "agent.html", render_agent())
+    write_text(ROOT / "experiments.html", render_experiments())
     write_text(ROOT / "paper.html", render_paper())
     write_text(ROOT / "method.html", render_method(data))
     for index, pattern in enumerate(data["patterns"]):

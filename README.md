@@ -33,6 +33,8 @@ patterns and the POSA series.
 ```
 index.html                  catalog with search/filter/deep links
 method.html                 evidence key, frozen inputs, and reproduction
+experiments.html            the two executed harness-evolution experiments
+paper.html                  position paper and H1–H3 research agenda
 patterns/<ID>/index.html     one detail page per record
 data/patterns.json          generated catalog data
 assets/diagrams/            SVG + PDF interaction diagrams (one pair per record)

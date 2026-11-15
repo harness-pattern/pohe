@@ -141,6 +141,7 @@ body {
   line-height: 1.55;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
   background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 0);
   background-size: 22px 22px;
 }
@@ -387,7 +388,7 @@ p {
 .hero {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 64px var(--gutter) 44px;
+  padding: 56px var(--gutter) 44px;
 }
 
 .hero-kicker {
@@ -401,20 +402,22 @@ p {
   color: var(--ink-faint);
   border-bottom: 1px solid var(--rule);
   padding-bottom: 12px;
-  margin-bottom: 44px;
+  margin-bottom: 30px;
 }
 
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.85fr);
-  gap: 56px;
+  gap: 48px;
   align-items: start;
+  margin-top: 30px;
 }
 
 .hero h1 {
-  font-size: clamp(44px, 7vw, 92px);
-  line-height: 0.98;
-  letter-spacing: -0.035em;
+  font-size: clamp(32px, 5vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
 }
 
 .hero h1 em {
@@ -1942,7 +1945,8 @@ p {
     gap: 34px;
   }
   .hero h1 {
-    font-size: clamp(40px, 12vw, 64px);
+    font-size: clamp(34px, 8vw, 52px);
+    white-space: normal;
   }
   .hero-kicker {
     flex-direction: column;
@@ -2148,7 +2152,7 @@ body::before {
 .hero {
   position: relative;
   isolation: isolate;
-  padding-top: 82px;
+  padding-top: 56px;
 }
 
 .hero::before {
@@ -2168,14 +2172,15 @@ body::before {
 }
 
 .hero h1 {
-  font-size: clamp(40px, 5.6vw, 84px);
+  font-size: clamp(32px, 5vw, 72px);
   letter-spacing: -0.045em;
-  white-space: normal;
+  white-space: nowrap;
 }
 
 .hero-deck {
   font-size: 20px;
   max-width: 44ch;
+  margin-top: 0;
 }
 
 .hero-note {
@@ -2706,7 +2711,7 @@ body::before {
     display: none;
   }
   .hero h1 {
-    font-size: clamp(42px, 13vw, 66px);
+    font-size: clamp(34px, 8vw, 52px);
     white-space: normal;
   }
   .inventory-line strong {
@@ -3115,7 +3120,8 @@ body::before {
 
 @media (max-width: 780px) {
   .hero h1 {
-    font-size: clamp(34px, 9.5vw, 58px);
+    font-size: clamp(34px, 8vw, 52px);
+    white-space: normal;
   }
 }
 
@@ -3184,7 +3190,7 @@ body::before {
 .hero-title-sub {
   display: block;
   max-width: 32ch;
-  margin-top: clamp(16px, 2.2vw, 28px);
+  margin-top: clamp(12px, 1.6vw, 20px);
   font-family: var(--sans);
   font-size: clamp(16px, 1.75vw, 26px);
   font-style: normal;
@@ -3192,6 +3198,7 @@ body::before {
   line-height: 1.35;
   letter-spacing: -0.01em;
   color: var(--ink-soft);
+  white-space: normal;
 }
 
 /* Repository files: a compact, scannable trail from a cue to public code. */

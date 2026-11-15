@@ -501,9 +501,9 @@ def render_index(patterns: list[dict]) -> str:
 <main id="main-content">
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-kicker"><span>Field guide № 01</span><span>Proposed pattern discipline</span></div>
+    <h1 id="hero-title">Pattern-Oriented <em>Harness Engineering<span class="hero-title-colon">:</span></em><span class="hero-title-sub">Design needs Patterns, when Agentic AI meets OOD</span></h1>
     <div class="hero-grid">
       <div>
-        <h1 id="hero-title">Pattern-Oriented<br><em>Harness Engineering<span class="hero-title-colon">:</span></em><span class="hero-title-sub">Design needs Patterns, when Agentic AI meets OOD</span></h1>
         <p class="hero-deck">A field guide to the recurring decisions around AI agents: what may vary, what must hold, and what happens when it does not.</p>
         <ol class="hero-questions" aria-label="Three questions this field guide asks">
           <li><span class="hero-q-tag">H1</span><p class="hero-q">When a prompt or code snapshot may be replaced within days, what is the asset of harness engineering?</p></li>

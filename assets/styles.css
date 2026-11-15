@@ -3189,7 +3189,7 @@ body::before {
 
 .hero-title-sub {
   display: block;
-  max-width: 32ch;
+  max-width: none;
   margin-top: clamp(12px, 1.6vw, 20px);
   font-family: var(--sans);
   font-size: clamp(16px, 1.75vw, 26px);
@@ -3198,7 +3198,13 @@ body::before {
   line-height: 1.35;
   letter-spacing: -0.01em;
   color: var(--ink-soft);
-  white-space: normal;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .hero-title-sub {
+    white-space: normal;
+  }
 }
 
 /* Repository files: a compact, scannable trail from a cue to public code. */

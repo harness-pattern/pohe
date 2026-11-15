@@ -329,12 +329,12 @@ class SiteIntegrityTests(unittest.TestCase):
             "docs/comments alone are not constraints", "E-family records are candidate mechanisms",
             "Comparative causal benefit remains open",
             "lower contract drift", "lower regression rate", "faster failure recovery",
-            "clearer change attribution", "Prospective / causal-open",
+            "clearer change attribution", "Prospective in the field",
             "bounded and unconstrained self-improvement", "repeated rounds",
             "planning cohort of 12 harnesses", "matched randomization", "ten revision rounds",
             "feature adaptation", "tool/schema change", "failure recovery", "permission/acceptance change",
-            "frozen task distribution", "No completed experiment is claimed",
-            "Planning only", "no causal result",
+            "frozen task distribution", "Field protocol: no field result",
+            "confirmatory apparatus result",
         ):
             self.assertIn(phrase, visible_text)
         self.assertIn('href="assets/paper/pohe-position.pdf" download', text)

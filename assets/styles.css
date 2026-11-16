@@ -36,6 +36,18 @@
   --fam-R-soft: #f6ead1;
   --fam-E: #5b3a6e;
   --fam-E-soft: #e8dfee;
+  --chart-mu: #9fb6c9;
+  --chart-mb: #1f4e79;
+  --chart-eu: #e3a184;
+  --chart-eb: #b4471d;
+  --chart-ink: #3a4756;
+  --chart-faint: #6d7885;
+  --chart-grid: #ddd8ca;
+  --heat-0: #e9e5da;
+  --heat-1: #f2d8c8;
+  --heat-2: #e8b295;
+  --heat-3: #d47a4f;
+  --heat-4: #b4471d;
   color-scheme: light;
 }
 
@@ -68,6 +80,18 @@
     --fam-P-soft: #1b2a38;
     --fam-W: #6ec2ae;
     --fam-W-soft: #142a26;
+    --chart-mu: #4b6478;
+    --chart-mb: #8fb8dc;
+    --chart-eu: #8a4b34;
+    --chart-eb: #e07a4b;
+    --chart-ink: #b9b4a8;
+    --chart-faint: #8b877d;
+    --chart-grid: #333c48;
+    --heat-0: #232b35;
+    --heat-1: #3a2620;
+    --heat-2: #5a3324;
+    --heat-3: #8a4b30;
+    --heat-4: #e07a4b;
     --fam-C: #e07a4b;
     --fam-C-soft: #33211a;
     --fam-R: #d9b15f;
@@ -4863,5 +4887,67 @@ body::before {
 @media (max-width: 480px) {
   .experiments-page .fact-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Experiment charts ---------- */
+
+.chart-figure {
+  margin: 26px 0 22px;
+  padding: 16px 16px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  box-shadow: var(--shadow);
+}
+
+.chart-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 2px;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  min-width: 640px;
+  height: auto;
+}
+
+.chart text {
+  font-family: var(--mono);
+}
+
+.chart-figure figcaption {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.chart-figure figcaption > span {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.chart-figure figcaption p {
+  margin: 6px 0 4px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 72ch;
+}
+
+.chart-figure figcaption small {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 780px) {
+  .chart {
+    min-width: 620px;
   }
 }

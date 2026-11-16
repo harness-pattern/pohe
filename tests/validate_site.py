@@ -362,8 +362,8 @@ class SiteIntegrityTests(unittest.TestCase):
         self.assertIn('href="assets/paper/pohe-position.pdf" download', text)
         self.assertIn('href="paper.html" aria-current="page"', text)
         self.assertIn("Harness Design Patterns and the A² Taxonomy", text)
-        self.assertIn("Three Major Hypotheses", text)
-        self.assertIn("Future Work: Prospective Tests of the Three Hypotheses", text)
+        self.assertIn("Two Major Hypotheses", text)
+        self.assertIn("Study Designs for the Two Hypotheses", text)
         self.assertNotIn("pohe-position.pdf#", text)
 
     def test_research_agenda_svg_is_local_and_accessible(self) -> None:

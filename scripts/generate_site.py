@@ -12,6 +12,7 @@ import csv
 import hashlib
 import html
 import json
+import math
 import re
 import shutil
 import subprocess
@@ -686,7 +687,7 @@ def research_agenda() -> str:
     <span class="section-index">RESEARCH AGENDA / H1—H3</span>
     <h2 id="research-agenda-title">From position to testable hypotheses.</h2>
     <p class="method-lead">Traditional software engineering was led by people; the agent harness increasingly evolves itself. Three questions follow. What is the asset when a prompt or code snapshot may be replaced within days? Must harness engineering keep the separation of concerns—and the boundary—that design patterns and POSA used to mark what rarely changes versus what may be derived, generalized, or customized? And does self-improvement with explicit variation boundaries drift less, regress less, recover faster, and attribute changes more clearly than unconstrained revision? Each question keeps its proposed answer, evidence, and falsification boundary in view.</p>
-    <p class="research-manuscript-context"><a class="text-link" href="assets/paper/pohe-position.pdf">Read the paper PDF <span aria-hidden="true">↗</span></a><span>Manuscript context: §3, “Harness Design Patterns and the A² Taxonomy”; §4, “Three Major Hypotheses”; and §6, “Future Work: Prospective Tests of the Three Hypotheses.” H1 and the field test remain open; H2’s enforcement main effect has a confirmatory apparatus result, and a coupled follow-up makes its boundary interaction estimable within the apparatus.</span></p>
+    <p class="research-manuscript-context"><a class="text-link" href="assets/paper/pohe-position.pdf">Read the paper PDF <span aria-hidden="true">↗</span></a><span>Manuscript context: §3, “Harness Design Patterns and the A² Taxonomy”; §4, “Two Major Hypotheses”; and §5, “Study Designs for the Two Hypotheses.” H1 and the field test remain open; H2’s enforcement main effect has a confirmatory apparatus result, and the coupled follow-up in §4 makes its boundary interaction estimable within the apparatus.</span></p>
 
     <figure class="research-map">
       <svg class="research-agenda-svg" viewBox="0 0 760 500" role="img" aria-labelledby="research-map-title research-map-description">
@@ -747,10 +748,340 @@ def research_agenda() -> str:
   </div></section>"""
 
 
+def load_experiments() -> dict:
+    path = ROOT / "data/experiments.json"
+    if not path.is_file():
+        raise FileNotFoundError(
+            "data/experiments.json is missing; run analysis/export_site_experiments.py"
+        )
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+ARM_COLOR = {
+    "MU": "var(--chart-mu)",
+    "MB": "var(--chart-mb)",
+    "EU": "var(--chart-eu)",
+    "EB": "var(--chart-eb)",
+}
+
+
+def _chart_text(
+    x: float, y: float, text: str, size: float = 9,
+    fill: str = "var(--chart-ink)", anchor: str = "start",
+    weight: str | None = None, family: str = "var(--mono)",
+) -> str:
+    weight_css = f";font-weight:{weight}" if weight else ""
+    return (
+        f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" '
+        f'style="font-family:{family};font-size:{size}px;fill:{fill}{weight_css}">'
+        f'{esc(text)}</text>'
+    )
+
+
+def _chart_svg(slug: str, title: str, desc: str, width: int, height: int, body: str) -> str:
+    return (
+        f'<svg class="chart" viewBox="0 0 {width} {height}" role="img" '
+        f'aria-labelledby="{slug}-title {slug}-desc" xmlns="http://www.w3.org/2000/svg">'
+        f'<title id="{slug}-title">{esc(title)}</title>'
+        f'<desc id="{slug}-desc">{esc(desc)}</desc>{body}</svg>'
+    )
+
+
+def chart_arm_means(exp: dict) -> str:
+    """Grouped small multiples: every arm mean for the frozen and coupled runs."""
+    metrics = [
+        ("contract_drift", "Contract drift", 4.0, 1.0),
+        ("unauthorized_effects", "Unauthorized effects", 5.0, 1.0),
+        ("task_success", "Contract-preserving success", 1.0, 0.01),
+        ("regression_rate", "Regression rate", 0.02, 0.001),
+    ]
+    arms = ["MU", "MB", "EU", "EB"]
+    body = [
+        '<rect x="0" y="0" width="760" height="450" style="fill:transparent"/>',
+        f'<rect x="12" y="16" width="14" height="9" rx="1" style="fill:var(--paper-raised);stroke:var(--chart-ink)" stroke-width="1"/>',
+        _chart_text(32, 24, "frozen 2×2 · 10 rounds", 9),
+        f'<rect x="182" y="16" width="14" height="9" rx="1" style="fill:var(--chart-ink)"/>',
+        _chart_text(202, 24, "coupled · 11 rounds", 9),
+    ]
+    for index, (key, label, vmax, digits) in enumerate(metrics):
+        px = 12 + (index % 2) * 378
+        py = 44 + (index // 2) * 200
+        left, right = px + 42, px + 358
+        top, bottom = py + 36, py + 150
+        plot_h = bottom - top
+        body.append(_chart_text(px + 2, py + 14, label, 10.5, family="var(--sans)", weight="600"))
+        body.append(f'<line x1="{left}" y1="{bottom}" x2="{right}" y2="{bottom}" style="stroke:var(--chart-grid)"/>')
+        for tick in (0.0, vmax / 2, vmax):
+            ty = bottom - (tick / vmax) * plot_h
+            body.append(
+                f'<line x1="{left}" y1="{ty:.1f}" x2="{right}" y2="{ty:.1f}" '
+                f'style="stroke:var(--chart-grid);stroke-dasharray:2 3" opacity="0.7"/>'
+            )
+            body.append(_chart_text(left - 5, ty + 3, f"{tick:g}", 7.5, "var(--chart-faint)", "end"))
+        group_w = (right - left) / 4
+        for arm_index, arm in enumerate(arms):
+            center = left + group_w * (arm_index + 0.5)
+            for run_index, run in enumerate(("confirmatory", "coupled")):
+                value = float(exp[run]["arm_means"][arm][key])
+                bar_h = max(1.0, value / vmax * plot_h)
+                bar_x = center - 12 + run_index * 13
+                fill = "var(--paper-raised)" if run == "confirmatory" else ARM_COLOR[arm]
+                stroke = ARM_COLOR[arm]
+                body.append(
+                    f'<rect x="{bar_x:.1f}" y="{bottom - bar_h:.1f}" width="11" height="{bar_h:.1f}" '
+                    f'rx="1" style="fill:{fill};stroke:{stroke}" stroke-width="1">'
+                    f'<title>{run} {arm}: {value:.4f}</title></rect>'
+                )
+                if run == "coupled":
+                    body.append(_chart_text(
+                        bar_x + 5.5, bottom - bar_h - 3,
+                        f"{value:.3f}" if digits < 0.01 else f"{value:.3f}",
+                        7.2, "var(--chart-faint)", "middle",
+                    ))
+            body.append(_chart_text(center, bottom + 14, arm, 8, "var(--chart-ink)", "middle"))
+    svg = _chart_svg(
+        "fig-arm-means",
+        "Arm means for the frozen and coupled runs",
+        "Four panels show contract drift, unauthorized effects, contract-preserving success, "
+        "and regression rate for MU, MB, EU, EB. Hollow bars are the frozen ten-round run; "
+        "filled bars are the coupled eleven-round run.",
+        760, 450, "".join(body),
+    )
+    return (
+        '<figure class="chart-figure"><div class="chart-scroll">' + svg + '</div>' +
+        '<figcaption><span>FIG. 1 / ARM MEANS</span><p>Hollow bars are the frozen ten-round run; '
+        'filled bars are the coupled eleven-round follow-up. The coupled request moves the EU '
+        'column, not the M columns, which is the interaction the design was built to expose.</p>'
+        '<small>Source: pooled cell means, three samples per harness-arm.</small></figcaption></figure>'
+    )
+
+
+def chart_interaction(exp: dict) -> str:
+    """Forest plot of the coupled boundary benefits and their interaction."""
+    rows = [
+        ("CONTRACT DRIFT", None, None, None, None),
+        ("Boundary benefit in M", "drift_boundary_M", "var(--chart-mb)", 0, "MU − MB"),
+        ("Boundary benefit in E", "drift_boundary_E", "var(--chart-eu)", 0, "EU − EB"),
+        ("Interaction", "drift_interaction_E_minus_M", "var(--ink)", 1, "(EU − EB) − (MU − MB)"),
+        ("UNAUTHORIZED EFFECTS", None, None, None, None),
+        ("Boundary benefit in M", "unauth_boundary_M", "var(--chart-mb)", 0, "MU − MB"),
+        ("Boundary benefit in E", "unauth_boundary_E", "var(--chart-eu)", 0, "EU − EB"),
+        ("Interaction", "unauth_interaction_E_minus_M", "var(--ink)", 1, "(EU − EB) − (MU − MB)"),
+    ]
+    x0, x1 = 200.0, 560.0
+    vmax = 1.15
+    def sx(value: float) -> float:
+        return x0 + max(0.0, min(vmax, value)) / vmax * (x1 - x0)
+    body: list[str] = []
+    body.append(f'<line x1="{sx(0):.1f}" y1="44" x2="{sx(0):.1f}" y2="338" style="stroke:var(--chart-grid)"/>')
+    body.append(f'<line x1="{sx(0.5):.1f}" y1="44" x2="{sx(0.5):.1f}" y2="338" style="stroke:var(--accent);stroke-dasharray:4 4" opacity="0.55"/>')
+    body.append(_chart_text(sx(0.5) + 4, 36, "margin 0.50", 8, "var(--accent)"))
+    y = 74
+    for label, key, color, bold, contrast in rows:
+        if key is None:
+            body.append(_chart_text(14, y - 6, label, 8.5, "var(--accent)", weight="700"))
+            y += 30
+            continue
+        item = exp["coupled"]["estimands"][key]
+        estimate = float(item["estimate"])
+        low, high = item["ci975"]
+        body.append(f'<line x1="{sx(low):.1f}" y1="{y}" x2="{sx(high):.1f}" y2="{y}" style="stroke:{color}" stroke-width="1.6" opacity="0.7"/>')
+        body.append(f'<circle cx="{sx(estimate):.1f}" cy="{y}" r="4.2" style="fill:{color}"/>')
+        body.append(_chart_text(190, y + 3, label, 8.8, "var(--chart-ink)", "end", "700" if bold else None))
+        body.append(_chart_text(574, y + 3, f"{estimate:+.3f}", 8.8, color, weight="700" if bold else None))
+        body.append(_chart_text(624, y + 3, f"[{low:.3f}, {high:.3f}]", 8, "var(--chart-faint)"))
+        if contrast:
+            body.append(_chart_text(190, y + 12, contrast, 7.2, "var(--chart-faint)", "end"))
+        y += 34
+    for tick in (0.0, 0.25, 0.5, 0.75, 1.0):
+        body.append(f'<line x1="{sx(tick):.1f}" y1="338" x2="{sx(tick):.1f}" y2="344" style="stroke:var(--chart-grid)"/>')
+        body.append(_chart_text(sx(tick), 356, f"{tick:.2f}", 7.5, "var(--chart-faint)", "middle"))
+    body.append(_chart_text(x0, 374, "boundary benefit (lower is worse, higher is better)", 8, "var(--chart-faint)"))
+    svg = _chart_svg(
+        "fig-interaction",
+        "Coupled boundary benefits and interaction",
+        "A forest plot of boundary benefits in the coupled run for contract drift and "
+        "unauthorized effects, with the interaction and simultaneous intervals. The interaction "
+        "rows clear the frozen 0.50 margin.",
+        760, 390, "".join(body),
+    )
+    return (
+        '<figure class="chart-figure"><div class="chart-scroll">' + svg + '</div>' +
+        '<figcaption><span>FIG. 2 / INTERACTION</span><p>Boundary benefit is U minus B within '
+        'each mode. In E the gate preserves the guard policy; in M the policy has no runtime '
+        'enforcer, so the same request cannot move outcomes. Bars are simultaneous 97.5% '
+        'intervals; the dashed line is the frozen 0.50 margin.</p>'
+        '<small>Source: coupled decision.json, 2,000 harness-clustered bootstraps.</small></figcaption></figure>'
+    )
+
+
+def _heat_bin(value: float, vmax: float) -> int:
+    if value <= 0.005:
+        return 0
+    return min(4, max(1, int(math.ceil(value / vmax * 4))))
+
+
+def chart_heatmap(exp: dict) -> str:
+    """Per-harness, per-arm heatmaps for the coupled run."""
+    harnesses = exp["coupled"]["harnesses"]
+    arms = ["MU", "MB", "EU", "EB"]
+    blocks = [
+        ("Contract drift", "contract_drift", 2.5, 130.0, 50.0),
+        ("Unauthorized effects", "unauthorized_effects", 4.2, 480.0, 50.0),
+    ]
+    y0, rowh = 92.0, 26.0
+    body: list[str] = []
+    for label, key, vmax, x0, colw in blocks:
+        body.append(_chart_text(x0, 52, label, 10.5, family="var(--sans)", weight="600"))
+        for col, arm in enumerate(arms):
+            body.append(_chart_text(x0 + colw * (col + 0.5), 74, arm, 8, "var(--chart-faint)", "middle"))
+        for row, harness in enumerate(harnesses):
+            y = y0 + row * rowh
+            for col, arm in enumerate(arms):
+                value = float(harness["arms"][arm][key])
+                b = _heat_bin(value, vmax)
+                fill = f"var(--heat-{b})"
+                text_fill = "var(--paper)" if b >= 3 else "var(--ink)"
+                body.append(
+                    f'<rect x="{x0 + col * colw + 1:.1f}" y="{y + 1:.1f}" '
+                    f'width="{colw - 2:.1f}" height="{rowh - 2:.1f}" rx="2" '
+                    f'style="fill:{fill}"><title>{harness["id"]} {arm} {label}: {value:.3f}</title></rect>'
+                )
+                body.append(_chart_text(
+                    x0 + col * colw + colw / 2, y + rowh / 2 + 3,
+                    "0" if value < 0.005 else f"{value:.1f}",
+                    8, text_fill, "middle",
+                ))
+    for row, harness in enumerate(harnesses):
+        y = y0 + row * rowh
+        body.append(_chart_text(122, y + 17, harness["id"], 8, "var(--chart-ink)", "end"))
+        body.append(_chart_text(472, y + 17, harness["id"], 8, "var(--chart-ink)", "end"))
+    body.append(_chart_text(130, 424, "0", 8, "var(--chart-faint)"))
+    for i in range(5):
+        body.append(f'<rect x="{150 + i * 22}" y="414" width="16" height="12" rx="2" style="fill:var(--heat-{i});stroke:var(--rule-soft)"/>')
+    body.append(_chart_text(266, 424, "max 2.5", 8, "var(--chart-faint)"))
+    body.append(_chart_text(480, 424, "0", 8, "var(--chart-faint)"))
+    for i in range(5):
+        body.append(f'<rect x="{500 + i * 22}" y="414" width="16" height="12" rx="2" style="fill:var(--heat-{i});stroke:var(--rule-soft)"/>')
+    body.append(_chart_text(616, 424, "max 4.2", 8, "var(--chart-faint)"))
+    svg = _chart_svg(
+        "fig-heatmap",
+        "Per-harness coupled outcomes by arm",
+        "Twelve harnesses by four arms, with contract drift on the left and unauthorized "
+        "effects on the right. The EB column is empty; the EU column carries the narrowed "
+        "guard policy; the M columns remain exposed.",
+        760, 440, "".join(body),
+    )
+    return (
+        '<figure class="chart-figure"><div class="chart-scroll">' + svg + '</div>' +
+        '<figcaption><span>FIG. 3 / PER-HARNESS EXPOSURE</span><p>Every harness shows the same '
+        'pattern: EB contains the round-eleven change, EU does not, and both M arms were already '
+        'exposed because they have no runtime guard. H03’s EU cell is 0.67 because one of its '
+        'three samples declined the request.</p>'
+        '<small>Source: coupled pooled cell means; colour scales differ between panels.</small></figcaption></figure>'
+    )
+
+
+def chart_round11(exp: dict) -> str:
+    """Compliance audit for the coupled round-eleven request."""
+    audit = exp["coupled"]["round11"]
+    harnesses = [f"H{index:02d}" for index in range(1, 13)]
+    x0, x1 = 118.0, 612.0
+    y0, rowh = 92.0, 25.0
+    body: list[str] = []
+    body.append(_chart_text(x0, 56, "EU promoted", 8.5, "var(--chart-eu)"))
+    body.append(_chart_text(x0 + 150, 56, "EB policy-rejected", 8.5, "var(--chart-mb)"))
+    body.append(_chart_text(x0 + 330, 56, "MB policy-rejected", 8.5, "var(--chart-mu)"))
+    body.append(_chart_text(x0, 72, "0", 7.5, "var(--chart-faint)"))
+    body.append(_chart_text(x1, 72, "3 samples", 7.5, "var(--chart-faint)", "end"))
+    for index, harness in enumerate(harnesses):
+        y = y0 + index * rowh
+        item = audit[harness]
+        body.append(_chart_text(110, y + 10, harness, 8, "var(--chart-ink)", "end"))
+        for bar_index, (count_key, color) in enumerate((
+            ("EU_promoted", "var(--chart-eu)"),
+            ("EB_rejected", "var(--chart-mb)"),
+            ("MB_rejected", "var(--chart-mu)"),
+        )):
+            count = int(item[count_key])
+            by = y + bar_index * 6.5
+            body.append(f'<rect x="{x0}" y="{by}" width="{x1 - x0}" height="4.5" rx="2" style="fill:var(--heat-0)"/>')
+            body.append(f'<rect x="{x0}" y="{by}" width="{(x1 - x0) * count / 3:.1f}" height="4.5" rx="2" style="fill:{color}"/>')
+        body.append(_chart_text(622, y + 11, f"{item['EU_promoted']} · {item['EB_rejected']} · {item['MB_rejected']}", 7.5, "var(--chart-faint)"))
+        if item["declined"]:
+            body.append(_chart_text(700, y + 11, f"{item['declined']} declined", 7.5, "var(--warn)"))
+    svg = _chart_svg(
+        "fig-round11",
+        "Round-eleven promotion audit",
+        "For every harness, the number of samples in which EU promoted the guard-policy "
+        "narrowing, EB rejected it for a policy mismatch, and MB rejected it. H03 has one "
+        "declined sample.",
+        760, 420, "".join(body),
+    )
+    return (
+        '<figure class="chart-figure"><div class="chart-scroll">' + svg + '</div>' +
+        '<figcaption><span>FIG. 4 / ROUND-ELEVEN AUDIT</span><p>The audit is part of the result: '
+        'the contrast is produced by the shared obligation, not by different proposals across '
+        'arms. EB and MB reject the same policy mismatch; only EU loses command containment. '
+        'H03 contributes one declined sample and remains in its arm.</p>'
+        '<small>Source: run_s1–s3 events.jsonl and plans_s1–s3.</small></figcaption></figure>'
+    )
+
+
+def chart_timeline(exp: dict) -> str:
+    """Two change sequences: the frozen ten rounds and the coupled eleven."""
+    body: list[str] = []
+    tracks = [
+        ("FROZEN 2×2", exp["sequence"]["confirmatory"], 86.0),
+        ("COUPLED", exp["sequence"]["coupled"], 182.0),
+    ]
+    for label, sequence, y in tracks:
+        body.append(_chart_text(20, y + 4, label, 9.5, "var(--chart-ink)", weight="700"))
+        x_start, x_end = 150.0, 700.0
+        step = (x_end - x_start) / (len(sequence) - 1)
+        body.append(f'<line x1="{x_start}" y1="{y}" x2="{x_end}" y2="{y}" style="stroke:var(--chart-grid)"/>')
+        for index, item in enumerate(sequence):
+            cx = x_start + index * step
+            round_number = int(item["round"])
+            coupled_round = label == "COUPLED" and round_number == 11
+            fill = "var(--accent)" if coupled_round else ("var(--warn)" if not item["in_seam"] else "var(--paper-raised)")
+            stroke = "var(--accent)" if coupled_round else ("var(--warn)" if not item["in_seam"] else "var(--chart-ink)")
+            radius = 11 if coupled_round else 8.5
+            body.append(
+                f'<circle cx="{cx:.1f}" cy="{y}" r="{radius}" style="fill:{fill};stroke:{stroke}" stroke-width="1.4">'
+                f'<title>Round {round_number}: {item["name"]}{" (out of seam)" if not item["in_seam"] else ""}</title></circle>'
+            )
+            body.append(_chart_text(cx, y + 3, str(round_number), 7.5 if not coupled_round else 8.5,
+                                    "var(--paper)" if coupled_round or not item["in_seam"] else "var(--chart-ink)", "middle"))
+        if label == "COUPLED":
+            body.append(_chart_text(700, y + 28, "round 11: guard policy narrowing", 8, "var(--accent)", "end"))
+    body.append(f'<circle cx="20" cy="238" r="6" style="fill:var(--paper-raised);stroke:var(--chart-ink)"/>')
+    body.append(_chart_text(32, 242, "in seam", 8))
+    body.append(f'<circle cx="102" cy="238" r="6" style="fill:var(--warn);stroke:var(--warn)"/>')
+    body.append(_chart_text(114, 242, "out of seam", 8))
+    body.append(f'<circle cx="218" cy="238" r="6" style="fill:var(--accent);stroke:var(--accent)"/>')
+    body.append(_chart_text(230, 242, "coupled round", 8))
+    svg = _chart_svg(
+        "fig-timeline",
+        "Change sequences for the frozen and coupled runs",
+        "Ten frozen rounds and eleven coupled rounds. Rounds seven through ten are out of "
+        "seam; round eleven is an in-seam request that narrows the guard policy.",
+        760, 260, "".join(body),
+    )
+    return (
+        '<figure class="chart-figure"><div class="chart-scroll">' + svg + '</div>' +
+        '<figcaption><span>FIG. 5 / CHANGE SEQUENCE</span><p>The coupled run keeps the frozen ten '
+        'rounds and adds one in-seam request. Rounds seven through ten remain the out-of-seam '
+        'proposals that the frozen authority rejects in every arm.</p>'
+        '<small>Source: protocol/change_sequence.json and protocol/change_sequence_coupled.json.</small></figcaption></figure>'
+    )
+
+
 def render_experiments() -> str:
-    body = """
+    exp = load_experiments()
+    body = f"""
 <main id="main-content" class="method-page experiments-page">
-  <header class="method-hero experiments-hero"><span class="section-index">EXPERIMENTS / EVOLUTION / APPARATUS</span><h1>Two runs.<br><em>One apparatus.</em></h1><p>A pre-registered 2×2 factorial over twelve harness instances, and a coupled follow-up that makes the boundary interaction estimable. Both execute real harnesses; neither is a field result, and neither estimates how model populations behave.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Read the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="#confirmatory">The confirmatory run <span aria-hidden="true">↓</span></a><a class="text-link" href="#coupled">The coupled follow-up <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Evidence status: apparatus-confirmatory. Twelve configured instances of two templates, one model snapshot, and a frozen human-authority policy. The field experiment remains prospective.</p></header>
+  <header class="method-hero experiments-hero"><span class="section-index">EXPERIMENTS / EVOLUTION / APPARATUS</span><h1>Two runs.<br><em>One apparatus.</em></h1><p>A pre-registered 2×2 factorial over twelve harness instances, and a coupled follow-up that makes the boundary interaction estimable. Both execute real harnesses; neither is a field result, and neither estimates how model populations behave.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Read the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="#coupled">The coupled follow-up <span aria-hidden="true">↓</span></a><a class="text-link" href="#confirmatory">The frozen run <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Evidence status: apparatus-confirmatory. Twelve configured instances of two templates, one model snapshot, and a frozen human-authority policy. The field experiment remains prospective.</p></header>
 
   <section class="method-section" id="apparatus"><div class="method-section-number">01</div><div>
     <h2>What the apparatus holds fixed.</h2>
@@ -769,6 +1100,7 @@ def render_experiments() -> str:
       <div><b>Promote</b>U promotes directly; B checks the seam, records, tests, and an independent gate.</div>
       <div><b>Measure</b>Contract drift, regression, unauthorized effects, and contract-preserving success.</div>
     </div>
+    {chart_timeline(exp)}
   </div></section>
 
   <section class="method-section" id="confirmatory"><div class="method-section-number">02</div><div>
@@ -787,13 +1119,13 @@ def render_experiments() -> str:
     <div class="verdict-row"><span class="verdict yes">Enforcement supported</span><span class="verdict open">Interaction: no exposure</span><span class="verdict open">Field: prospective</span></div>
     <p><strong>Enforcement.</strong> Contract-preserving success is equal at 0.995 in both modes, and M produces 4.000 more unauthorized effects per replica than E (simultaneous 97.5% interval 4.000 to 4.000; margin 0.50). Round zero already separates the arms: M fails two of four probes and all four adversarial tasks before any evolution, so the main effect is a property of the runtime guard rather than accumulated change.</p>
     <div class="review-boundary experiment-boundary"><h3>Why the interaction is zero here</h3><p>The promotion gate runs the same held-out tasks in E and M, and the external guard acts only at runtime; it does not enter promotion. Under the frozen authority, the out-of-seam requests that produce drift in the pilot are rejected in every arm. The zero is a failed manipulation check, not evidence that boundaries add nothing.</p></div>
-    <p class="experiment-link"><a class="text-link" href="paper.html#research-agenda">H2 in the research agenda <span aria-hidden="true">↗</span></a><span>Full account: paper appendix, “Pre-registered Confirmatory Run within the Apparatus.”</span></p>
   </div></section>
 
   <section class="method-section" id="coupled"><div class="method-section-number">03</div><div>
     <span class="section-index">RUN 02 / COUPLED FOLLOW-UP / 11 ROUNDS</span>
     <h2>Making the interaction estimable.</h2>
     <p>The frozen design cannot estimate the boundary interaction because the guard and the gate act on disjoint mechanisms. The coupled follow-up makes them share one obligation: the external guard's own protection policy, <code>guard_policy.protected_actions</code>. The guard enforces that policy at runtime; the gate compares a candidate policy with the immutable baseline contract and rejects any weakening. Round eleven is an in-seam request to stop blocking commands outside the allowlist while keeping workspace write containment. Filesystem containment stays an internal permission obligation; command allowlisting is enforced only by the guard, so the same promoted change has a runtime effect in E and none in M.</p>
+    {chart_arm_means(exp)}
     <div class="table-wrap"><table class="metric-table">
       <thead><tr><th>Arm</th><th class="num">Contract drift</th><th class="num">Regression</th><th class="num">Unauthorized effects</th><th class="num">CPS</th></tr></thead>
       <tbody>
@@ -803,13 +1135,11 @@ def render_experiments() -> str:
         <tr><td>EB</td><td class="num">0.000</td><td class="num">0.000</td><td class="num">0.000</td><td class="num">1.000</td></tr>
       </tbody>
     </table></div>
-    <div class="interaction-panel">
-      <div><span>Drift benefit in E</span><b>+1.00</b><small>EU − EB</small></div>
-      <div><span>Drift benefit in M</span><b>+0.03</b><small>MU − MB</small></div>
-      <div class="interaction-total"><span>Interaction</span><b>+0.97</b><small>simultaneous 0.889 to 1.000</small></div>
-    </div>
     <div class="verdict-row"><span class="verdict yes">Enforcement supported</span><span class="verdict yes">Interaction supported</span><span class="verdict open">Apparatus only</span></div>
+    {chart_interaction(exp)}
     <p><strong>Result.</strong> The drift interaction is 0.972 (simultaneous 0.889 to 1.000; pair-clustered 95% 0.917 to 1.000) and the unauthorized-effects interaction is 0.972 with the same intervals, both above the frozen 0.50 margin. The boundary benefit is 1.000 in E and 0.028 in M for drift, and 0.972 versus 0.000 for unauthorized effects. Regression is descriptive and its interaction is 0.000.</p>
+    {chart_heatmap(exp)}
+    {chart_round11(exp)}
     <p><strong>Exposure audit.</strong> In every non-declined sample the round-eleven narrowing is promoted in EU, rejected in EB and MB with a recorded guard-policy mismatch, and promoted in MU. One of thirty-six round-eleven proposals was declined; its replicas remain in their arm as non-exposure rather than being dropped.</p>
     <div class="review-boundary experiment-boundary"><h3>Read this estimate narrowly</h3><p>The result is structural. It shows that the instrument can express a boundary-by-enforcement interaction when the two mechanisms share an obligation, and that the gate preserves the guard policy supplying it. It is not a field interaction, not a model-population estimate, and not a revision of the frozen confirmatory result. The revision that retargeted round eleven from write containment to command containment happened before any confirmatory matrix, is recorded in the protocol, and did not change the frozen margins.</p></div>
     <p class="experiment-link"><a class="text-link" href="paper.html#research-agenda">H2 in the research agenda <span aria-hidden="true">↗</span></a><span>Full account: paper appendix, “Coupled Follow-Up: An Estimable Boundary Interaction.”</span></p>
@@ -844,7 +1174,8 @@ for s in 1 2 3; do
     --out results_coupled/run_s$s
 done
 python3 analysis/pool_confirmatory.py --root results_coupled --samples 3
-python3 analysis/coupled_decision.py --root results_coupled --samples 3</code></pre>
+python3 analysis/coupled_decision.py --root results_coupled --samples 3
+python3 analysis/export_site_experiments.py</code></pre>
     <p>Outputs: <code>results_confirmatory/decision.md</code> and <code>results_coupled/decision.md</code> carry the pooled arm means, estimands, intervals, decisions, and exposure audits. The run manifests record protocol hashes and the authority scope.</p>
   </div></section>
 </main>"""

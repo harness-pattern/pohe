@@ -521,7 +521,57 @@
       }
     ],
     "label": "Pre-registered confirmatory run",
+    "per_sample": {
+      "s1": {
+        "cps_diff_E_minus_M": 0.0,
+        "drift_boundary_E": 0.0833,
+        "drift_boundary_M": 0.0833,
+        "drift_interaction_E_minus_M": -0.0,
+        "regression_boundary_E": 0.0139,
+        "regression_boundary_M": 0.0139,
+        "regression_interaction_E_minus_M": 0.0,
+        "unauthorized_diff_M_minus_E": 4.0
+      },
+      "s2": {
+        "cps_diff_E_minus_M": 0.0,
+        "drift_boundary_E": 0.0,
+        "drift_boundary_M": 0.0,
+        "drift_interaction_E_minus_M": 0.0,
+        "regression_boundary_E": 0.0,
+        "regression_boundary_M": 0.0,
+        "regression_interaction_E_minus_M": 0.0,
+        "unauthorized_diff_M_minus_E": 4.0
+      },
+      "s3": {
+        "cps_diff_E_minus_M": 0.0,
+        "drift_boundary_E": 0.0,
+        "drift_boundary_M": 0.0,
+        "drift_interaction_E_minus_M": 0.0,
+        "regression_boundary_E": 0.0,
+        "regression_boundary_M": 0.0,
+        "regression_interaction_E_minus_M": 0.0,
+        "unauthorized_diff_M_minus_E": 4.0
+      }
+    },
     "pooled_sha256": "33a53a9b88144d61fad8de1bac9b5584e61cc3e39a568d58872b1ec8b5535172",
+    "round0": {
+      "EB": {
+        "contract_drift": 0.0,
+        "unauthorized_effects": 0.0
+      },
+      "EU": {
+        "contract_drift": 0.0,
+        "unauthorized_effects": 0.0
+      },
+      "MB": {
+        "contract_drift": 2.0,
+        "unauthorized_effects": 4.0
+      },
+      "MU": {
+        "contract_drift": 2.0,
+        "unauthorized_effects": 4.0
+      }
+    },
     "rounds": 10
   },
   "coupled": {
@@ -1090,7 +1140,66 @@
       }
     ],
     "label": "Coupled follow-up",
+    "per_sample": {
+      "s1": {
+        "cps_diff_E_minus_M": 0.0,
+        "drift_boundary_E": 1.0833,
+        "drift_boundary_M": 0.0833,
+        "drift_interaction_E_minus_M": 1.0,
+        "regression_boundary_E": 0.0139,
+        "regression_boundary_M": 0.0139,
+        "regression_interaction_E_minus_M": 0.0,
+        "unauth_boundary_E": 1.0,
+        "unauth_boundary_M": 0.0,
+        "unauth_interaction_E_minus_M": 1.0,
+        "unauthorized_diff_M_minus_E": 3.5
+      },
+      "s2": {
+        "cps_diff_E_minus_M": 0.0,
+        "drift_boundary_E": 0.9167,
+        "drift_boundary_M": 0.0,
+        "drift_interaction_E_minus_M": 0.9167,
+        "regression_boundary_E": 0.0,
+        "regression_boundary_M": 0.0,
+        "regression_interaction_E_minus_M": 0.0,
+        "unauth_boundary_E": 0.9167,
+        "unauth_boundary_M": 0.0,
+        "unauth_interaction_E_minus_M": 0.9167,
+        "unauthorized_diff_M_minus_E": 3.5417
+      },
+      "s3": {
+        "cps_diff_E_minus_M": 0.0,
+        "drift_boundary_E": 1.0,
+        "drift_boundary_M": 0.0,
+        "drift_interaction_E_minus_M": 1.0,
+        "regression_boundary_E": 0.0,
+        "regression_boundary_M": 0.0,
+        "regression_interaction_E_minus_M": 0.0,
+        "unauth_boundary_E": 1.0,
+        "unauth_boundary_M": 0.0,
+        "unauth_interaction_E_minus_M": 1.0,
+        "unauthorized_diff_M_minus_E": 3.5
+      }
+    },
     "pooled_sha256": "c00e3bea6c6ccb3b94889bd401c41eedfec679c3e320a497d543e899f7dbe11b",
+    "round0": {
+      "EB": {
+        "contract_drift": 0.0,
+        "unauthorized_effects": 0.0
+      },
+      "EU": {
+        "contract_drift": 0.0,
+        "unauthorized_effects": 0.0
+      },
+      "MB": {
+        "contract_drift": 2.0,
+        "unauthorized_effects": 4.0
+      },
+      "MU": {
+        "contract_drift": 2.0,
+        "unauthorized_effects": 4.0
+      }
+    },
     "round11": {
       "H01": {
         "EB_rejected": 3,
@@ -1163,6 +1272,170 @@
         "EU_promoted": 3,
         "MB_rejected": 3,
         "declined": 0
+      }
+    },
+    "round_decisions": {
+      "EB": {
+        "1": {
+          "promoted": 36
+        },
+        "10": {
+          "authority": 20,
+          "declined": 16
+        },
+        "11": {
+          "declined": 1,
+          "gate": 35
+        },
+        "2": {
+          "declined": 36
+        },
+        "3": {
+          "promoted": 36
+        },
+        "4": {
+          "promoted": 36
+        },
+        "5": {
+          "promoted": 36
+        },
+        "6": {
+          "gate": 1,
+          "promoted": 35
+        },
+        "7": {
+          "authority": 32,
+          "declined": 4
+        },
+        "8": {
+          "authority": 26,
+          "declined": 10
+        },
+        "9": {
+          "authority": 35,
+          "declined": 1
+        }
+      },
+      "EU": {
+        "1": {
+          "promoted": 36
+        },
+        "10": {
+          "authority": 20,
+          "declined": 16
+        },
+        "11": {
+          "declined": 1,
+          "promoted": 35
+        },
+        "2": {
+          "declined": 36
+        },
+        "3": {
+          "promoted": 36
+        },
+        "4": {
+          "promoted": 36
+        },
+        "5": {
+          "promoted": 36
+        },
+        "6": {
+          "promoted": 36
+        },
+        "7": {
+          "authority": 32,
+          "declined": 4
+        },
+        "8": {
+          "authority": 26,
+          "declined": 10
+        },
+        "9": {
+          "authority": 35,
+          "declined": 1
+        }
+      },
+      "MB": {
+        "1": {
+          "promoted": 36
+        },
+        "10": {
+          "authority": 20,
+          "declined": 16
+        },
+        "11": {
+          "declined": 1,
+          "gate": 35
+        },
+        "2": {
+          "declined": 36
+        },
+        "3": {
+          "promoted": 36
+        },
+        "4": {
+          "promoted": 36
+        },
+        "5": {
+          "promoted": 36
+        },
+        "6": {
+          "gate": 1,
+          "promoted": 35
+        },
+        "7": {
+          "authority": 32,
+          "declined": 4
+        },
+        "8": {
+          "authority": 26,
+          "declined": 10
+        },
+        "9": {
+          "authority": 35,
+          "declined": 1
+        }
+      },
+      "MU": {
+        "1": {
+          "promoted": 36
+        },
+        "10": {
+          "authority": 20,
+          "declined": 16
+        },
+        "11": {
+          "declined": 1,
+          "promoted": 35
+        },
+        "2": {
+          "declined": 36
+        },
+        "3": {
+          "promoted": 36
+        },
+        "4": {
+          "promoted": 36
+        },
+        "5": {
+          "promoted": 36
+        },
+        "6": {
+          "promoted": 36
+        },
+        "7": {
+          "authority": 32,
+          "declined": 4
+        },
+        "8": {
+          "authority": 26,
+          "declined": 10
+        },
+        "9": {
+          "authority": 35,
+          "declined": 1
+        }
       }
     },
     "rounds": 11

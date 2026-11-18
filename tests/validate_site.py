@@ -393,7 +393,7 @@ class SiteIntegrityTests(unittest.TestCase):
                 for anchor in re.findall(r"<a\b[^>]*>(.*?)</a>", match.group(0), re.S):
                     anchor = re.sub(r"<(sup|span)\b.*?</\1>", "", anchor, flags=re.S)
                     labels.append(html.unescape(re.sub(r"<[^>]+>", "", anchor)).strip())
-                self.assertEqual(labels, ["Catalog", "Agent", "Experiments", "Paper", "About me"])
+                self.assertEqual(labels, ["Catalog", "Agent", "Experiments", "Review", "Paper", "About me"])
                 paper_link = re.search(r'<a class="paper-link" href="([^"]+)"', match.group(0))
                 self.assertIsNotNone(paper_link)
                 expected_paper_href = "paper.html" if page.parent == ROOT else "../../paper.html"
@@ -404,6 +404,10 @@ class SiteIntegrityTests(unittest.TestCase):
                     "experiments.html" if page.parent == ROOT else "../../experiments.html"
                 )
                 self.assertEqual(experiments_link.group(1), expected_experiments_href)
+                review_link = re.search(r'<a href="([^"]+)"[^>]*>Review</a>', match.group(0))
+                self.assertIsNotNone(review_link)
+                expected_review_href = "reviews/h2/" if page.parent == ROOT else "../../reviews/h2/"
+                self.assertEqual(review_link.group(1), expected_review_href)
 
     def test_public_h2_review_is_sealed(self) -> None:
         package = ROOT / "reviews" / "h2"

@@ -215,6 +215,7 @@ def nav(prefix: str, current: str) -> str:
     <a href="{prefix}./#catalog"{' aria-current="page"' if current == 'catalog' else ''}>Catalog <sup>52</sup></a>
     <a href="{prefix}agent.html"{' aria-current="page"' if current == 'agent' else ''}>Agent</a>
     <a href="{prefix}experiments.html"{' aria-current="page"' if current == 'experiments' else ''}>Experiments</a>
+    <a href="{prefix}reviews/h2/">Review</a>
     <a class="paper-link" href="{prefix}paper.html"{' aria-current="page"' if current == 'paper' else ''}>Paper</a>
     <a class="personal-link" href="https://xhyccc.github.io/">About me <span aria-hidden="true">↗</span></a>
   </nav>

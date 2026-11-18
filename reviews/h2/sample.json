@@ -1,0 +1,79 @@
+{
+  "schema_version": "pohe-human-review-1.0.0",
+  "seed": "pohe-human-review-2026-11",
+  "selected_repositories": [
+    "OpenHands/software-agent-sdk",
+    "cline/cline",
+    "google-gemini/gemini-cli",
+    "affaan-m/ECC",
+    "earendil-works/pi",
+    "huggingface/smolagents",
+    "langflow-ai/langflow",
+    "Darwin-Agent/HarnessX",
+    "openai/codex"
+  ],
+  "allocation": {
+    "development": 2,
+    "validation": 2,
+    "heldout": 3,
+    "supplement": 1,
+    "supplemental": 1
+  },
+  "decisions": [
+    {
+      "slug": "cline/cline",
+      "split": "development",
+      "stratum": "TS_CORE",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "OpenHands/software-agent-sdk",
+      "split": "development",
+      "stratum": "PY_CORE",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "google-gemini/gemini-cli",
+      "split": "validation",
+      "stratum": "TS_CORE",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "affaan-m/ECC",
+      "split": "validation",
+      "stratum": "CONFIG_HARNESS",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "earendil-works/pi",
+      "split": "heldout",
+      "stratum": "TS_CORE",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "huggingface/smolagents",
+      "split": "heldout",
+      "stratum": "PY_ORCH",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "langflow-ai/langflow",
+      "split": "heldout",
+      "stratum": "PY_VISUAL_ORCH",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "Darwin-Agent/HarnessX",
+      "split": "supplement",
+      "stratum": "RESEARCH_EVOLUTION",
+      "reason": "public_frozen_sample"
+    },
+    {
+      "slug": "openai/codex",
+      "split": "supplemental",
+      "stratum": "FRONTIER_CLI",
+      "reason": "public_frozen_sample"
+    }
+  ],
+  "reviewed_at_selection": []
+}

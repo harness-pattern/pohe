@@ -383,6 +383,8 @@ class SiteIntegrityTests(unittest.TestCase):
 
     def test_primary_navigation_has_approved_entries(self) -> None:
         for page in ROOT.rglob("*.html"):
+            if "reviews" in page.relative_to(ROOT).parts:
+                continue
             with self.subTest(page=page.relative_to(ROOT)):
                 text = page.read_text(encoding="utf-8")
                 match = re.search(r'<nav class="site-nav".*?</nav>', text, re.S)
@@ -402,6 +404,27 @@ class SiteIntegrityTests(unittest.TestCase):
                     "experiments.html" if page.parent == ROOT else "../../experiments.html"
                 )
                 self.assertEqual(experiments_link.group(1), expected_experiments_href)
+
+    def test_public_h2_review_is_sealed(self) -> None:
+        package = ROOT / "reviews" / "h2"
+        data = json.loads((package / "data.json").read_text(encoding="utf-8"))
+        page = (package / "index.html").read_text(encoding="utf-8")
+        self.assertEqual(data["review_mode"], "public")
+        self.assertEqual(data["protocol_version"], "h2-static-gap-1.0.0")
+        self.assertEqual(len(data["repos"]), 9)
+        self.assertEqual(sum(len(repo["cells"]) for repo in data["repos"]), 54)
+        for repo in data["repos"]:
+            for cell in repo["cells"]:
+                self.assertNotIn("agent", cell)
+                self.assertNotIn("review", cell)
+                self.assertTrue(cell["evidence"])
+                self.assertTrue(cell["excerpt_ids"])
+        self.assertIn('$("#reviewerRoleField").hidden = true;', page)
+        self.assertIn("https://github.com/xhyccc/pohe/issues/new", page)
+        self.assertIn("Create issue", page)
+        self.assertIn("POHE H2 review JSON", page)
+        self.assertIn("H2 · Independent human review", page)
+        self.assertNotIn("h2a-static-gap", page)
 
     def test_support_files_and_javascript_wiring(self) -> None:
         for relative in (

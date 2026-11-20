@@ -551,7 +551,7 @@
     <div class="rail-foot">
       <button class="btn teal" id="btnExportRail">Export review</button>
       <a class="btn ghost" id="btnSubmitGitHubRail"
-         href="https://github.com/xhyccc/pohe/issues/new"
+         href="https://github.com/harness-pattern/pohe/issues/new"
          target="_blank" rel="noopener noreferrer" hidden>Submit via GitHub</a>
       <button class="btn ghost" id="btnReset">Reset local draft</button>
     </div>
@@ -1393,7 +1393,7 @@
         JSON.stringify(inlinePayload, null, 2) +
         "\n```\n\n</details>";
       return {
-        url: "https://github.com/xhyccc/pohe/issues/new?" + new URLSearchParams({ title, body }).toString(),
+        url: "https://github.com/harness-pattern/pohe/issues/new?" + new URLSearchParams({ title, body }).toString(),
         scope: candidate.scope,
         reviews: candidate.reviews.length
       };
@@ -1417,7 +1417,7 @@
       const title = "[H2 human review] " + reviewerId + " · " + candidate.scope + " · attach JSON";
       const body = makeSummary(candidate) +
         "\n\nExport the JSON file in the review app and drag it into this issue.";
-      url = "https://github.com/xhyccc/pohe/issues/new?" +
+      url = "https://github.com/harness-pattern/pohe/issues/new?" +
         new URLSearchParams({ title, body }).toString();
       scope = candidate.scope;
       reviewCount = candidate.reviews.length;

@@ -281,7 +281,7 @@ def shell(title: str, description: str, body: str, prefix: str = "", current: st
   <meta name="description" content="{esc(description)}">
   <meta name="theme-color" content="#f2eee4">
   <title>{esc(title)}</title>
-  <link rel="canonical" href="https://xhyccc.github.io/pohe/{esc(canonical)}">
+  <link rel="canonical" href="https://harness-pattern.github.io/pohe/{esc(canonical)}">
   <link rel="stylesheet" href="{prefix}assets/styles.css">
   <script src="{prefix}assets/site.js" defer></script>
 </head>

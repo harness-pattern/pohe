@@ -6,7 +6,7 @@ and harness-evolution research. Each record shows a proposed pointcut, a
 protected contract, permitted variation, an analytical object-interaction
 model, and the evidence layer behind it.
 
-Published at **https://xhyccc.github.io/pohe/**
+Published at **https://harness-pattern.github.io/pohe/**
 
 ## What this site is
 

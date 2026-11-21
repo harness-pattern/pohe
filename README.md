@@ -60,6 +60,17 @@ python3 -I tests/validate_site.py
 python3 -m http.server 8000
 ```
 
+For presentation changes using the committed catalog and existing assets:
+
+```sh
+python3 scripts/generate_site.py --from-export
+python3 -I tests/validate_site.py
+```
+
+This renders 59 HTML pages without changing the frozen JSON, diagrams, or paper.
+The UI uses local design tokens, system fonts, light/dark themes, and keyboard
+search (`/`).
+
 Override the inputs with `--study /path/to/pattern-mining-study` and
 `--paper /path/to/main.pdf`. Generated files are the output of the script; edit
 the generator rather than the rendered HTML.

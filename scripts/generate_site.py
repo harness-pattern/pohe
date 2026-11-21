@@ -11,12 +11,15 @@ import ast
 import csv
 import hashlib
 import html
+import io
 import json
+import keyword
 import math
 import re
 import shutil
 import subprocess
 import sys
+import tokenize
 
 sys.dont_write_bytecode = True
 from collections import Counter, defaultdict
@@ -202,23 +205,61 @@ def source_url(repo: str, commit: str, locator: str) -> str:
     return f"{url}#L{line}" if line else url
 
 
+ICONS = {
+    "catalog": '<rect x="3" y="3" width="6" height="6" rx="1.2"/><rect x="13" y="3" width="6" height="6" rx="1.2"/><rect x="3" y="13" width="6" height="6" rx="1.2"/><rect x="13" y="13" width="6" height="6" rx="1.2"/>',
+    "terminal": '<rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="m6.5 9 3 3-3 3m7-0.5h4"/>',
+    "experiments": '<path d="M9 3h6m-5 0v7l-5.5 8.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 10V3M8 14h8"/>',
+    "review": '<path d="m9 5 1-2h4l1 2h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h3Z"/><path d="m8 13 2.5 2.5L16 10"/>',
+    "paper": '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5Zm0 0v5h5M9 12h6m-6 4h6"/>',
+    "person": '<circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/>',
+    "repository": '<path d="M5 3h14v18H6a3 3 0 0 1-3-3V5a2 2 0 0 1 2-2Zm0 0v12h14M3 18a3 3 0 0 1 3-3"/><path d="M9 7h6m-6 3h4"/>',
+    "arrow": '<path d="M5 12h14m-5-5 5 5-5 5"/>',
+    "shield": '<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 2.5 2.5L16 9"/>',
+    "book": '<path d="M12 5v16M3 4c3-1 6-1 9 1 3-2 6-2 9-1v15c-3-1-6-1-9 2-3-3-6-3-9-2V4Z"/>',
+    "sun": '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+    "moon": '<path d="M20.5 13a8.5 8.5 0 0 1-9.5-9.5A8.5 8.5 0 1 0 20.5 13Z"/>',
+    "monitor": '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/>',
+}
+
+
+def icon(name: str, css_class: str = "") -> str:
+    """Small decorative interface icons; the adjacent text names the action."""
+    return f'<svg class="ui-icon {css_class}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">{ICONS[name]}</svg>'
+
+
+def brand_mark() -> str:
+    """A connected H inside a boundary, shared with the standalone SVG asset."""
+    return '<svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="mark-frame" x="1" y="1" width="30" height="30" rx="7"/><path class="mark-link" d="M10 9v14m12-14v14M10 16h12"/><g class="mark-node"><circle cx="10" cy="9" r="2"/><circle cx="10" cy="23" r="2"/><circle cx="22" cy="9" r="2"/><circle cx="22" cy="23" r="2"/></g></svg>'
+
+
+def theme_button() -> str:
+    return f'<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Theme: system. Switch to light theme" title="Theme: system. Switch to light theme">{icon("monitor", "theme-icon theme-auto")}{icon("sun", "theme-icon theme-light")}{icon("moon", "theme-icon theme-dark")}</button>'
+
+
 def nav(prefix: str, current: str) -> str:
     return f"""
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
-  <a class="wordmark" href="{prefix}./" aria-label="POHE initiative home">
-    <svg class="mark" viewBox="0 0 42 42" aria-hidden="true"><path d="M4 4h34v34H4zM4 14h34M14 4v34M14 14l12 12M26 14v12H14"/><circle cx="14" cy="14" r="2.5"/><circle cx="26" cy="26" r="2.5"/></svg>
-    <span><strong>POHE</strong><small>An open engineering initiative</small></span>
-  </a>
-  <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Index</span><i aria-hidden="true"></i></button>
+  <div class="header-inner">
+    <a class="wordmark" href="{prefix}./" aria-label="POHE initiative home">
+      {brand_mark()}
+      <span class="repo-owner">harness-pattern</span><span class="repo-divider">/</span><strong>pohe</strong>
+    </a>
+    <span class="repo-visibility">Public</span>
+    <div class="header-actions">
+      {theme_button()}
+      <a class="source-button" href="https://github.com/harness-pattern/pohe" aria-label="POHE source repository">{icon("repository")}Source code</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Menu</span><i aria-hidden="true"></i></button>
+    </div>
+  </div>
   <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-    <a href="{prefix}initiative.html"{' aria-current="page"' if current == 'initiative' else ''}>Initiative</a>
-    <a href="{prefix}./#catalog"{' aria-current="page"' if current == 'catalog' else ''}>Catalog <sup>52</sup></a>
-    <a href="{prefix}agent.html"{' aria-current="page"' if current == 'agent' else ''}>Agent</a>
-    <a href="{prefix}experiments.html"{' aria-current="page"' if current == 'experiments' else ''}>Experiments</a>
-    <a href="{prefix}reviews/h2/">Review</a>
-    <a class="paper-link" href="{prefix}paper.html"{' aria-current="page"' if current == 'paper' else ''}>Paper</a>
-    <a class="personal-link" href="https://xhyccc.github.io/">About me <span aria-hidden="true">↗</span></a>
+    <a href="{prefix}initiative.html"{' aria-current="page"' if current == 'initiative' else ''}>{icon("book")}Initiative</a>
+    <a href="{prefix}./#catalog"{' aria-current="page"' if current == 'catalog' else ''}>{icon("catalog")}Catalog <sup>52</sup></a>
+    <a href="{prefix}agent.html"{' aria-current="page"' if current == 'agent' else ''}>{icon("terminal")}Agent</a>
+    <a href="{prefix}experiments.html"{' aria-current="page"' if current == 'experiments' else ''}>{icon("experiments")}Experiments</a>
+    <a href="{prefix}reviews/h2/">{icon("review")}Review</a>
+    <a class="paper-link" href="{prefix}paper.html"{' aria-current="page"' if current == 'paper' else ''}>{icon("paper")}Paper</a>
+    <a class="personal-link" href="https://xhyccc.github.io/">{icon("person")}About me <span aria-hidden="true">↗</span></a>
   </nav>
 </header>""".strip()
 
@@ -280,14 +321,17 @@ def shell(title: str, description: str, body: str, prefix: str = "", current: st
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="{esc(description)}">
-  <meta name="theme-color" content="#f2eee4">
+  <meta name="theme-color" content="#f6f8fa">
   <title>{esc(title)}</title>
   <link rel="canonical" href="https://harness-pattern.github.io/pohe/{esc(canonical)}">
-  <link rel="stylesheet" href="{prefix}assets/styles.css">
-  <script src="{prefix}assets/site.js" defer></script>
+  <link rel="icon" href="{prefix}assets/pohe-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{prefix}assets/styles.css?v=20261121g">
+  <script src="{prefix}assets/theme.js?v=20261121g"></script>
+  <script src="{prefix}assets/site.js?v=20261121g" defer></script>
 </head>
-<body>
+<body class="reference-site">
 {nav(prefix, current)}
+<div class="app-main">
 {body}
 <footer class="site-footer">
   <div><strong>POHE Initiative</strong> / Pattern-Oriented Harness Engineering<br><span class="footer-author">Founded by Haoyi Xiong</span></div>
@@ -295,6 +339,7 @@ def shell(title: str, description: str, body: str, prefix: str = "", current: st
   <div class="footer-links"><a href="{prefix}initiative.html">About the initiative</a><a href="{prefix}method.html#evidence-key">How to read the evidence</a><a href="{prefix}method.html#colophon">Colophon</a><a href="https://github.com/harness-pattern/pohe">GitHub</a></div>
   <p class="footer-disclosure">Analytical diagrams, prompt sketches, and code designs describe proposed contracts. They are not observed traces, repository class declarations, or evidence that any implementation conforms.</p>
 </footer>
+</div>
 </body>
 </html>"""
 
@@ -313,7 +358,7 @@ def catalog_row(p: dict) -> str:
   <a class="pattern-row-link" href="patterns/{p['id']}/" aria-label="{p['id']}: {esc(p['name'])}">
     <span class="pattern-code">{p['id']}</span>
     <span class="pattern-main"><strong>{esc(p['name'])}</strong><span>{esc(p['problem'])}</span></span>
-    <span class="pattern-activity"><b>{activity}</b><small>{source}</small><span class="row-hypotheses">{hypothesis_chips}</span></span>
+    <span class="pattern-activity"><span class="pattern-meta-line"><b>{activity}</b><span class="row-hypotheses">{hypothesis_chips}</span></span><small><span class="evidence-dot"></span>{source}</small></span>
     <span class="row-coverage" aria-label="Any-evidence coverage: {observed} of {total} repository families"><span class="coverage-track"><i style="width:{coverage}%"></i></span><small>{observed}<b>/{total}</b></small></span>
     <span class="row-arrow" aria-hidden="true">↗</span>
   </a>
@@ -398,7 +443,7 @@ def render_agent() -> str:
   <header class="agent-hero">
     <div class="agent-hero-copy">
       <span class="section-index">OPEN PACKAGE / AGENT + CLI + SKILLS</span>
-      <h1>Point the lens<br><em>at your own harness.</em></h1>
+      <h1>POHE agent toolkit</h1>
       <p class="agent-deck">A portable agent package for the 52 POHE records. Scan an arbitrary repository for harness-pattern cues, pull the structural candidates into source review, and turn what survives into a pattern-guided evolution proposal.</p>
       <div class="method-actions"><a class="button button-primary" href="https://github.com/xhyccc/pohe-agent">Open the repository <span aria-hidden="true">↗</span></a><a class="text-link" href="#install">Install the CLI <span aria-hidden="true">↓</span></a></div>
       <ul class="agent-meta"><li><b>MIT</b><span>license</span></li><li><b>stdlib</b><span>no runtime deps</span></li><li><b>52</b><span>frozen records</span></li><li><b>3</b><span>agent skills</span></li></ul>
@@ -418,7 +463,7 @@ def render_agent() -> str:
   </header>
 
   <section class="agent-pipeline" aria-labelledby="pipeline-title">
-    <div class="agent-section-head"><span class="section-index">THE PIPELINE</span><h2 id="pipeline-title">Three moves, three questions.</h2><p>What is worth reading? Is the mechanism in this scope? What may safely change?</p></div>
+    <div class="agent-section-head"><span class="section-index">THE PIPELINE</span><h2 id="pipeline-title">Detect, analyze, and plan</h2><p>What is worth reading? Is the mechanism in this scope? What may safely change?</p></div>
     <div class="pipeline-grid">
       <article><span>01 / DETECT</span><h3>Where are the leads?</h3><p>Run the frozen cue expressions over code, tests, and support files. Excludes caches, build output, and vendored trees.</p><code>pohe-agent scan &lt;repo&gt;</code></article>
       <article><span>02 / ANALYZE</span><h3>Is the mechanism here?</h3><p>Anchor each cue to its enclosing declaration, then check context, trigger, structure, and effect. The packet reports missing roles, the negative control, and contract probes. Parallel file analysis is deterministic with <code>--jobs</code>.</p><code>pohe-agent analyze &lt;repo&gt; --pattern P01</code></article>
@@ -427,7 +472,7 @@ def render_agent() -> str:
   </section>
 
   <section class="agent-install" id="install">
-    <div class="agent-install-copy"><span class="section-index">INSTALL / 60 SECONDS</span><h2>Clone, install, point.</h2><p>The scanner is Python standard library only. The agent instructions and skills travel with the repository.</p><p class="agent-install-note">Python 3.10+. No API key, no network access, and no repository upload.</p></div>
+    <div class="agent-install-copy"><span class="section-index">INSTALL / 60 SECONDS</span><h2>Installation</h2><p>The scanner is Python standard library only. The agent instructions and skills travel with the repository.</p><p class="agent-install-note">Python 3.10+. No API key, no network access, and no repository upload.</p></div>
     <div class="agent-install-command"><div class="command-head"><span>TERMINAL</span><button class="copy-button" type="button" data-copy="agent-install-code">Copy</button></div><pre class="command-block" id="agent-install-code"><code>git clone https://github.com/xhyccc/pohe-agent.git
 cd pohe-agent
 python3 -m pip install -e .
@@ -435,7 +480,7 @@ pohe-agent scan /path/to/your/harness</code></pre></div>
   </section>
 
   <section class="agent-ships" aria-labelledby="ships-title">
-    <div class="agent-section-head"><span class="section-index">WHAT SHIPS</span><h2 id="ships-title">An agent package, not a black box.</h2><p>Every layer is readable, testable, and replaceable.</p></div>
+    <div class="agent-section-head"><span class="section-index">WHAT SHIPS</span><h2 id="ships-title">Package contents</h2><p>Every layer is readable, testable, and replaceable.</p></div>
     <div class="ships-grid">
       <article><span class="ship-code">A</span><h3>AGENTS.md</h3><p>The operating manual: the evidence ladder, the standard workflow, the hard rules, and the handoff points between detection, matching, and evolution.</p></article>
       <article><span class="ship-code">S</span><h3>Three skills</h3><p><b>Detection</b> finds leads. <b>Matching</b> adjudicates a candidate against the pointcut, contract, and negative control. <b>Evolution</b> plans and verifies the change.</p><ul class="skill-list"><li><code>pohe-pattern-detection</code></li><li><code>pohe-pattern-matching</code></li><li><code>pohe-harness-evolution</code></li></ul></article>
@@ -481,7 +526,7 @@ pohe-agent scan /path/to/your/harness</code></pre></div>
   </section>
 
   <aside class="agent-cta">
-    <div><span class="section-index">START HERE</span><h2>Read the agent. Then read your harness.</h2><p>The repository contains the instructions, the skills, the catalog, and the CLI. The initiative's catalog remains the reference for every record.</p></div>
+    <div><span class="section-index">START HERE</span><h2>Explore the toolkit</h2><p>The repository contains the instructions, the skills, the catalog, and the CLI. The initiative's catalog remains the reference for every record.</p></div>
     <div class="agent-cta-actions"><a class="button button-primary" href="https://github.com/xhyccc/pohe-agent">GitHub / pohe-agent <span aria-hidden="true">↗</span></a><a class="text-link" href="./#catalog">Browse the 52 records <span aria-hidden="true">↗</span></a></div>
   </aside>
 </main>"""
@@ -528,68 +573,62 @@ def render_index(patterns: list[dict]) -> str:
     family_options = "".join(f'<option value="{key}">{key} — {esc(value[0])}</option>' for key, value in FAMILIES.items())
     activity_options = "".join(f'<option value="{key}">{key} — {esc(value)}</option>' for key, value in ACTIVITIES.items())
     hypothesis_options = "".join(f'<option value="{key}">{key} · {esc(value["kicker"])}</option>' for key, value in HYPOTHESES.items())
-    family_counts = Counter(p["family"] for p in patterns)
-    family_rules = "".join(f"""<a href="#catalog" class="family-rule" data-family="{key}" data-family-link="{key}"><span class="family-code">{key}</span><strong>{esc(value[0])}</strong><small>{esc(value[1])}</small><span class="family-count">{family_counts[key]} records</span></a>""" for key, value in FAMILIES.items())
+    featured = next(p for p in patterns if p["id"] == "P17")
     rows = "\n".join(catalog_row(p) for p in patterns)
     body = f"""
-<main id="main-content">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-kicker"><span>POHE / Open initiative</span><span>Research + engineering + review</span></div>
-    <h1 id="hero-title">Pattern-Oriented <em>Harness Engineering<span class="hero-title-colon">:</span></em><span class="hero-title-sub">Design needs Patterns, when Agentic AI meets OOD</span></h1>
-    <div class="hero-grid">
-      <div>
-        <p class="hero-deck">POHE is an open initiative building a shared, evidence-graded pattern discipline for AI-agent harnesses: what may vary, what must hold, and what happens when it does not.</p>
-        <ol class="hero-questions" aria-label="Three questions the initiative asks">
-          <li><span class="hero-q-tag">H1</span><p class="hero-q">When a prompt or code snapshot may be replaced within days, what is the asset of harness engineering?</p></li>
-          <li><span class="hero-q-tag">H2</span><p class="hero-q">Design patterns and POSA separated what rarely changes from what may be customized. Must harness engineering keep that separation of concerns—and its boundary?</p></li>
-          <li><span class="hero-q-tag">H3</span><p class="hero-q">Does bounded self-improvement with explicit variation boundaries drift less, regress less, recover faster, and attribute changes more clearly than unconstrained revision?</p></li>
-        </ol>
-        <div class="hero-actions"><a class="button button-primary" href="initiative.html">About the initiative <span aria-hidden="true">→</span></a><a class="text-link" href="#catalog">Browse the 52 records <span aria-hidden="true">↓</span></a><a class="text-link" href="method.html">Read the method <span aria-hidden="true">↗</span></a></div>
-      </div>
-      <aside class="hero-note" aria-label="Position statement">
-        <span class="note-label">Position / 001</span>
-        <p>Scaling alone cannot absorb a harness’s system responsibilities. Name the join point. Protect the contract. Test the violation path. Record the lifecycle.</p>
-        <a class="note-map-link" href="#a2-map"><span>A² taxonomy</span><strong>See the two-axis map</strong><i aria-hidden="true">↓</i></a>
-      </aside>
+<main id="main-content" class="catalog-page">
+  <header class="catalog-intro">
+    <div class="intro-copy"><span class="section-index">Engineering reference</span>
+      <h1>Pattern-Oriented Harness Engineering</h1>
+      <p>An open research and engineering initiative for AI-agent harnesses: shared patterns, explicit contracts, and inspectable evidence.</p>
+      <div class="intro-links"><a href="initiative.html">About the initiative {icon("arrow")}</a><a href="#a2-map">A² framework {icon("arrow")}</a><a href="method.html">Read the method {icon("arrow")}</a><a href="assets/paper/pohe-position.pdf">Position paper {icon("arrow")}</a></div>
     </div>
-    <figure class="hero-map" id="a2-map">
-      <a class="hero-map-frame" href="assets/a2/taxonomy-a2.svg" aria-label="Open the full A² taxonomy map as SVG">
-        <img src="assets/a2/taxonomy-a2.svg" width="1120" height="690" alt="A-squared taxonomy: three activities—design, verification, and evolution—cross protected contracts and permitted variation, with an authorized re-generalization return from maintenance to design." loading="lazy">
-      </a>
+  </header>
+  <section class="framework-section" id="a2-map" aria-label="A-squared architecture map">
+    <figure class="hero-map">
+      <div class="a2-map-scroll" tabindex="0" role="region" aria-label="A-squared diagram; scroll horizontally on small screens">
+        <a class="hero-map-frame" href="assets/a2/taxonomy-a2.svg" aria-label="Open the full A-squared architecture map">
+          <img src="assets/a2/taxonomy-a2.svg" width="1120" height="690" alt="A² — Activities × Assets. Design and implementation specify invariants and permitted variation; testing and verification exercise both; maintenance and evolution preserve the contract or return to authorized redesign. Paradigm, quality, and human or agent factors are cross-cutting lenses.">
+        </a>
+      </div>
       <figcaption>
-        <span class="map-kicker">A² / THE TAXONOMY</span>
-        <h3>Two axes, one record.</h3>
-        <p>Activities ask when an obligation is designed, verified, and revisited. Assets ask what must hold and what may change. The dashed return is re-generalization: the contract itself is reopened.</p>
-        <div class="map-links"><a class="button button-ghost" href="assets/a2/taxonomy-a2.svg">Open the full map <span aria-hidden="true">↗</span></a><a class="text-link" href="assets/a2/taxonomy-a2.pdf" download>Download PDF <span aria-hidden="true">↓</span></a></div>
+        <div><span class="map-kicker">A² / THE TAXONOMY</span><p>What must hold, what may change, and when to revisit the contract.</p></div>
+        <div class="map-actions"><a href="assets/a2/taxonomy-a2.svg">Open the full map {icon("arrow")}</a><a href="assets/a2/taxonomy-a2.pdf" download>Download PDF</a></div>
       </figcaption>
     </figure>
-    <div class="inventory-line"><div class="stat"><strong>52</strong><span>candidate records</span></div><div class="stat"><strong>05</strong><span>source families</span></div><div class="stat"><strong>03</strong><span>activity coordinates</span></div><small>Inventory size, not a prevalence claim.</small></div>
   </section>
-
+  <div class="catalog-layout">
+    <section class="catalog-section" id="catalog" aria-labelledby="catalog-title">
+      <div class="catalog-heading"><h2 id="catalog-title">Pattern library</h2><a class="text-link inventory-link" href="inventory.html">Source inventory {icon("arrow")}</a></div>
+      <form class="filters" id="filters" role="search" aria-label="Filter pattern catalog">
+        <div class="search-field"><label for="pattern-search" class="visually-hidden">Search the pattern catalog</label><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5"/><path d="m10 10 4 4"/></svg><input id="pattern-search" name="q" type="search" placeholder="Search patterns…" autocomplete="off" spellcheck="false"><kbd aria-hidden="true">/</kbd></div>
+        <div class="filter-options">
+          <div class="select-field"><label for="family-filter">Family</label><select id="family-filter" name="family"><option value="all">All families</option>{family_options}</select></div>
+          <div class="select-field"><label for="activity-filter">Activity</label><select id="activity-filter" name="activity"><option value="all">All activities</option>{activity_options}</select></div>
+          <div class="select-field"><label for="hypothesis-filter">Research lens</label><select id="hypothesis-filter" name="hypothesis"><option value="all">All hypotheses</option>{hypothesis_options}</select></div>
+          <div class="select-field"><label for="evidence-filter">Evidence</label><select id="evidence-filter" name="evidence"><option value="all">Any status</option><option value="source_located">Source-located exemplar</option><option value="specification_only">Specification only</option><option value="current_cue">Current retrieval cue</option><option value="no_current_cue">No current retrieval cue</option></select></div>
+          <button class="reset-button" id="reset-filters" type="button">Reset</button>
+        </div>
+      </form>
+      <div class="catalog-list">
+        <div class="results-meta"><p aria-live="polite"><strong id="result-count">52</strong> records</p><span>Activity / evidence</span><span title="Any-evidence family coverage">Families</span></div>
+        <div class="pattern-index" id="pattern-index">{rows}</div>
+        <div class="empty-state" id="empty-state" hidden><h3>No matching patterns</h3><p>Try another term or clear a filter. Search results do not indicate whether a mechanism exists in a repository.</p><button class="button button-primary" type="button" data-reset-filters>Show all 52 records</button></div>
+      </div>
+      <p class="section-footnote">Source anchors are exemplars; coverage is not confirmed prevalence.</p>
+      <noscript><p class="noscript-note">Search and filters require JavaScript. All 52 records remain browsable above without it.</p></noscript>
+    </section>
+  </div>
   <section class="initiative-banner" id="initiative" aria-labelledby="initiative-title">
     <div><span class="section-index">THE POHE INITIATIVE</span><h2 id="initiative-title">A shared language for the system around the model.</h2></div>
     <p>POHE brings researchers and harness builders together around one durable unit: the responsibility that must survive a change. The initiative maintains the pattern catalog, evidence method, independent review, experiments, and open tooling behind that work.</p>
     <a class="button button-ghost" href="initiative.html">Read the initiative charter <span aria-hidden="true">→</span></a>
   </section>
+  <section class="reference-notes" aria-label="Reading the pattern catalog">
+    <div class="record-example"><span class="section-index">A worked example</span><h2><a href="patterns/P17/">P17 · {esc(featured['name'])}</a></h2><p>{esc(featured['invariant'])}</p><a href="patterns/P17/">Read the contract {icon("arrow")}</a></div>
+    <div><span class="section-index">Reading the evidence</span><h2>Trace the claim to its source.</h2><p>A pattern record separates the proposed contract from the evidence behind it. Source locations are examples; implementation conformance requires further review.</p><a href="method.html#evidence-key">Understand the evidence levels {icon("arrow")}</a></div>
 
-  <section class="family-section" aria-labelledby="family-title"><div class="section-index">05 / SOURCE FAMILIES</div><h2 id="family-title" class="visually-hidden">Five source families</h2><div class="family-rules">{family_rules}</div><p class="section-footnote">Families record provenance, not another taxonomy axis. E records are research mechanisms, not claims of independently established recurring patterns.</p></section>
-
-  <section class="catalog-section" id="catalog" aria-labelledby="catalog-title">
-    <div class="catalog-heading"><div><span class="section-index">INDEX / 001—052</span><h2 id="catalog-title">Pattern catalog</h2></div><p>Search by responsibility, mechanism, or join point. Filter without losing the underlying record.</p></div>
-    <form class="filters" id="filters" role="search" aria-label="Filter pattern catalog">
-      <div class="search-field"><label for="pattern-search">Search the pattern catalog</label><input id="pattern-search" name="q" type="search" placeholder="Try ‘sandbox’, ‘state’, or ‘stop’…" autocomplete="off" spellcheck="false"><span aria-hidden="true">⌕</span></div>
-      <div class="select-field"><label for="family-filter">Source family</label><select id="family-filter" name="family"><option value="all">All five families</option>{family_options}</select></div>
-      <div class="select-field"><label for="activity-filter">A² activity</label><select id="activity-filter" name="activity"><option value="all">All activities</option>{activity_options}</select></div>
-      <div class="select-field"><label for="hypothesis-filter">Research hypothesis</label><select id="hypothesis-filter" name="hypothesis"><option value="all">All hypotheses</option>{hypothesis_options}</select></div>
-      <div class="select-field"><label for="evidence-filter">Evidence status</label><select id="evidence-filter" name="evidence"><option value="all">Any evidence status</option><option value="source_located">Source-located exemplar</option><option value="specification_only">Specification only</option><option value="current_cue">Current retrieval cue</option><option value="no_current_cue">No current retrieval cue</option></select></div>
-      <button class="reset-button" id="reset-filters" type="button">Reset</button>
-    </form>
-    <div class="results-meta"><p aria-live="polite">Showing <strong id="result-count">52</strong> of 52 records</p><p><span class="legend-dot"></span> Source anchors are exemplars, not population estimates; coverage is not confirmed prevalence.</p></div>
-    <div class="pattern-index" id="pattern-index">{rows}</div>
-    <div class="empty-state" id="empty-state" hidden><span>∅</span><h3>No records at this intersection.</h3><p>Try a broader term or clear one of the filters. An empty filtered view says nothing about implementations in repositories.</p><button class="button button-primary" type="button" data-reset-filters>Show all 52 records</button></div>
-    <noscript><p class="noscript-note">Search and filters require JavaScript. All 52 records remain browsable above without it.</p></noscript>
   </section>
-
 </main>"""
     return shell("POHE Initiative — Pattern-Oriented Harness Engineering", "An open research and engineering initiative for AI-agent harnesses: a 52-record pattern catalog, evidence method, independent review, experiments, and open tooling.", body, current="catalog")
 
@@ -605,10 +644,42 @@ def anchor_html(anchor: dict) -> str:
 
 
 
+def highlight_python(source: str) -> str:
+    """Highlight only lexical Python tokens, preserving the exact source text."""
+    lines = source.splitlines(keepends=True)
+    offsets = [0]
+    for line in lines:
+        offsets.append(offsets[-1] + len(line))
+    rendered = []
+    cursor = 0
+    try:
+        for token in tokenize.generate_tokens(io.StringIO(source).readline):
+            style = None
+            if token.type == tokenize.NAME and keyword.iskeyword(token.string):
+                style = "keyword"
+            elif token.type == tokenize.STRING:
+                style = "string"
+            elif token.type == tokenize.COMMENT:
+                style = "comment"
+            elif token.type == tokenize.NUMBER:
+                style = "number"
+            if style is None:
+                continue
+            start = offsets[token.start[0] - 1] + token.start[1]
+            end = offsets[token.end[0] - 1] + token.end[1]
+            rendered.append(esc(source[cursor:start]))
+            rendered.append(f'<span class="syntax-{style}">{esc(source[start:end])}</span>')
+            cursor = end
+    except (tokenize.TokenError, IndentationError):
+        return esc(source)
+    rendered.append(esc(source[cursor:]))
+    return "".join(rendered)
+
+
 def example_section(p: dict) -> str:
     example = EXAMPLES[p["id"]]
     prompt = esc(example["prompt"])
-    code = esc(example["code"])
+    code = highlight_python(example["code"])
     note = esc(example["note"])
     prompt_id = f"prompt-{p['id']}"
     code_id = f"code-{p['id']}"
@@ -691,11 +762,9 @@ def render_detail(p: dict, previous_id: str, next_id: str) -> str:
     <div class="record-stamp"><span>JOIN POINT</span><code>{esc(p['join_point'])}</code><span>RECORD STATUS</span><strong>Candidate · v{esc(p['codebook_version'])}</strong></div>
   </header>
 
-  <section class="record-section uml-section" id="uml-view"><div class="record-section-label"><span>01</span><h2>UML class view</h2><p>The proposed contract drawn as participant roles, received calls, and numbered dependencies.</p></div><figure class="interaction-figure"><a href="../../{p['class_svg']}" aria-label="Open full-size UML class view for {p['id']}"><img src="../../{p['class_svg']}" alt="UML class view for {esc(p['name'])}, showing participant roles, received calls, and analytical dependencies" loading="lazy"></a><figcaption><span>FIG. {p['id']} / UML CLASS VIEW</span><div class="figure-links"><a href="../../{p['class_svg']}">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../{p['diagram_pdf']}" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
-
-  <section class="record-section interaction-section" id="interactions"><div class="record-section-label"><span>02</span><h2>Object interactions</h2><p>The same roles and calls as a class collaboration and a numbered message sequence.</p></div><figure class="interaction-figure"><a href="../../{p['interaction_svg']}" aria-label="Open full-size object interaction diagram for {p['id']}"><img src="../../{p['interaction_svg']}" alt="Object interaction diagram for {esc(p['name'])}, showing role collaboration and a numbered message sequence" loading="lazy"></a><figcaption><span>FIG. {p['id']} / OBJECT INTERACTIONS</span><div class="figure-links"><a href="../../{p['interaction_svg']}">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../{p['interaction_pdf']}" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
-
-  <nav class="record-toc" aria-label="On this page"><span>On this record</span><a href="#uml-view">UML view</a><a href="#interactions">Object interactions</a><a href="#pointcut">Pointcut</a><a href="#contract">Contract</a><a href="#variation">Variation</a><a href="#prompt-code">Prompt + code</a><a href="#detection">Detection</a><a href="#repo-files">Repository files</a><a href="#evidence">Evidence</a></nav>
+  <div class="record-layout">
+  <nav class="record-toc" aria-label="On this page"><span>On this record</span><a href="#pointcut">Pointcut</a><a href="#contract">Contract</a><a href="#variation">Variation</a><a href="#prompt-code">Prompt + code</a><a href="#uml-view">UML view</a><a href="#interactions">Object interactions</a><a href="#detection">Detection</a><a href="#repo-files">Repository files</a><a href="#evidence">Evidence</a></nav>
+  <div class="record-content">
 
   <section class="record-section pointcut-section" id="pointcut"><div class="record-section-label"><span>03</span><h2>Pointcut</h2><p>Where the mechanism applies. All four dimensions belong to the proposed match, not just its vocabulary.</p></div><dl class="pointcut-grid">{pointcut}</dl></section>
 
@@ -707,15 +776,23 @@ def render_detail(p: dict, previous_id: str, next_id: str) -> str:
 
 {example_section(p)}
 
+  <section class="record-section uml-section" id="uml-view"><div class="record-section-label"><span>01</span><h2>UML class view</h2><p>The proposed contract drawn as participant roles, received calls, and numbered dependencies.</p></div><figure class="interaction-figure"><a href="../../{p['class_svg']}" aria-label="Open full-size UML class view for {p['id']}"><img src="../../{p['class_svg']}" alt="UML class view for {esc(p['name'])}, showing participant roles, received calls, and analytical dependencies" loading="lazy"></a><figcaption><span>FIG. {p['id']} / UML CLASS VIEW</span><div class="figure-links"><a href="../../{p['class_svg']}">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../{p['diagram_pdf']}" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
+
+  <section class="record-section interaction-section" id="interactions"><div class="record-section-label"><span>02</span><h2>Object interactions</h2><p>The same roles and calls as a class collaboration and a numbered message sequence.</p></div><figure class="interaction-figure"><a href="../../{p['interaction_svg']}" aria-label="Open full-size object interaction diagram for {p['id']}"><img src="../../{p['interaction_svg']}" alt="Object interaction diagram for {esc(p['name'])}, showing role collaboration and a numbered message sequence" loading="lazy"></a><figcaption><span>FIG. {p['id']} / OBJECT INTERACTIONS</span><div class="figure-links"><a href="../../{p['interaction_svg']}">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../{p['interaction_pdf']}" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
+
+
 {detection_section(p)}
 
   <section class="record-section repo-files-section" id="repo-files"><div class="record-section-label"><span>08</span><h2>Repository files</h2><p>Up to five public files retrieved by the frozen cue and pinned to the examined commit. A match is a place to inspect, not a confirmed implementation.</p></div><div class="repo-files">{repo_files_html(p['repo_files'])}</div></section>
 
   <section class="record-section evidence-section" id="evidence"><div class="record-section-label"><span>09</span><h2>Evidence & provenance</h2><p>Each layer answers a different question. Do not substitute retrieval for review.</p></div><div class="evidence-content"><div class="evidence-status"><span class="status-mark"></span><h3>{esc(status)}</h3><p>{esc(evidence_note)}</p><p class="review-note"><strong>Review boundary:</strong> this candidate and its specification come from an AI-assisted study. Independent human validation remains open.</p></div><div class="coverage-figure"><span>ANY-EVIDENCE FAMILY COVERAGE</span><strong>{coverage}<i>/{family_total}</i></strong><div class="coverage-bar" aria-hidden="true"><i style="width:{percent}%"></i></div><p>{percent}% of repository families in the frozen panel have at least one current cue, historical cue, or canonical source layer. <strong>This is not confirmed prevalence.</strong></p><small>Current lexical-cue repositories: {current} / {evidence['repository_total']}</small></div></div><div class="anchors">{anchors}</div><details class="retrieval-cue"><summary>Exploratory retrieval cue <span>Regex / v{esc(p['retrieval_cue']['version'])}</span></summary><div><code>{regex}</code><p>This expression is a discovery instrument only. A match is a retrieval cue—not a confirmed implementation, pointcut match, or contract proof.</p></div></details></section>
 
+  </div>
+  </div>
+
   <nav class="record-pagination" aria-label="Adjacent pattern records"><a class="previous-record" href="../{previous_id}/"><span>← Previous record</span><strong>{previous_id}</strong></a><a href="../../#catalog" class="all-records">All 52</a><a class="next-record" href="../{next_id}/"><span>Next record →</span><strong>{next_id}</strong></a></nav>
 </main>"""
-    return shell(f"{p['id']} · {p['name']} — POHE", f"{p['id']} {p['name']}: proposed harness pattern pointcut, contract, variation, interaction model, and source evidence.", body, prefix="../../", canonical=f"patterns/{p['id']}/")
+    return shell(f"{p['id']} · {p['name']} — POHE", f"{p['id']} {p['name']}: proposed harness pattern pointcut, contract, variation, interaction model, and source evidence.", body, prefix="../../", current="catalog", canonical=f"patterns/{p['id']}/")
 
 
 def research_agenda() -> str:
@@ -1303,7 +1380,7 @@ def render_experiments() -> str:
     exp = load_experiments()
     body = f"""
 <main id="main-content" class="method-page experiments-page">
-  <header class="method-hero experiments-hero"><span class="section-index">EXPERIMENTS / EVOLUTION / APPARATUS</span><h1>Two runs.<br><em>One apparatus.</em></h1><p>A pre-registered 2×2 factorial over twelve harness instances, and a coupled follow-up that makes the boundary interaction estimable. Both execute real harnesses; neither is a field result, and neither estimates how model populations behave.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Read the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="#coupled">The coupled follow-up <span aria-hidden="true">↓</span></a><a class="text-link" href="#confirmatory">The frozen run <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Evidence status: apparatus-confirmatory. Twelve configured instances of two templates, one model snapshot, and a frozen human-authority policy. The field experiment remains prospective.</p></header>
+  <header class="method-hero experiments-hero"><span class="section-index">EXPERIMENTS / EVOLUTION / APPARATUS</span><h1>Harness evolution experiments</h1><p>A pre-registered 2×2 factorial over twelve harness instances, and a coupled follow-up that makes the boundary interaction estimable. Both execute real harnesses; neither is a field result, and neither estimates how model populations behave.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Read the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="#coupled">The coupled follow-up <span aria-hidden="true">↓</span></a><a class="text-link" href="#confirmatory">The frozen run <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Evidence status: apparatus-confirmatory. Twelve configured instances of two templates, one model snapshot, and a frozen human-authority policy. The field experiment remains prospective.</p></header>
 
   <section class="method-section" id="apparatus"><div class="method-section-number">01</div><div>
     <h2>What the apparatus holds fixed.</h2>
@@ -1410,7 +1487,7 @@ python3 analysis/export_site_experiments.py</code></pre>
 def render_paper() -> str:
     body = f"""
 <main id="main-content" class="method-page paper-page">
-  <header class="method-hero paper-hero"><span class="section-index">PAPER / POSITION / CONFIRMATORY APPARATUS RUN</span><h1>Agent harnesses need<br><em>a pattern discipline.</em></h1><p>Scaling alone cannot absorb their system responsibilities. The position paper asks three questions—what is the asset under constant rewriting, must a separation of concerns be kept, and do explicit variation boundaries improve self-improvement—and develops the A² taxonomy, a pre-registered 2×2 apparatus run that supports the enforcement main effect, and the field tests that remain open.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Download the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="assets/paper/pohe-position.pdf">Open the PDF <span aria-hidden="true">↗</span></a><a class="text-link" href="#research-agenda">Research agenda <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Unpublished manuscript. A pre-registered 12-instance apparatus run supports the enforcement main effect. A coupled follow-up makes its boundary interaction estimable and supports it structurally within the same apparatus; the field tests remain prospective. <a class="text-link" href="experiments.html">See the experiments <span aria-hidden="true">↗</span></a></p></header>
+  <header class="method-hero paper-hero"><span class="section-index">PAPER / POSITION / CONFIRMATORY APPARATUS RUN</span><h1>Position paper &amp; research agenda</h1><p>Scaling alone cannot absorb their system responsibilities. The position paper asks three questions—what is the asset under constant rewriting, must a separation of concerns be kept, and do explicit variation boundaries improve self-improvement—and develops the A² taxonomy, a pre-registered 2×2 apparatus run that supports the enforcement main effect, and the field tests that remain open.</p><div class="method-actions"><a class="button button-primary" href="assets/paper/pohe-position.pdf" download>Download the paper PDF <span aria-hidden="true">↓</span></a><a class="text-link" href="assets/paper/pohe-position.pdf">Open the PDF <span aria-hidden="true">↗</span></a><a class="text-link" href="#research-agenda">Research agenda <span aria-hidden="true">↓</span></a></div><p class="paper-hero-note">Unpublished manuscript. A pre-registered 12-instance apparatus run supports the enforcement main effect. A coupled follow-up makes its boundary interaction estimable and supports it structurally within the same apparatus; the field tests remain prospective. <a class="text-link" href="experiments.html">See the experiments <span aria-hidden="true">↗</span></a></p></header>
 
 {research_agenda()}
 </main>"""
@@ -1421,7 +1498,7 @@ def render_method(data: dict) -> str:
     hash_rows = "".join(f"<tr><td><code>{esc(path)}</code></td><td><code class=\"hash\">{esc(digest)}</code></td></tr>" for path, digest in data["source_hashes"].items())
     body = f"""
 <main id="main-content" class="method-page">
-  <header class="method-hero"><span class="section-index">METHOD / EVIDENCE / REPRODUCIBILITY</span><h1>Claims should carry<br><em>their own boundaries.</em></h1><p>This site is a static rendering of a proposed pattern discipline and an exploratory repository survey. It deliberately separates a useful record from the evidence that supports it.</p><div class="method-actions"><a class="button button-primary" href="paper.html">Open the paper <span aria-hidden="true">↗</span></a><a class="text-link" href="paper.html#research-agenda">Research agenda <span aria-hidden="true">↓</span></a><a class="text-link" href="./#catalog">Return to the catalog</a></div></header>
+  <header class="method-hero"><span class="section-index">METHOD / EVIDENCE / REPRODUCIBILITY</span><h1>Method &amp; evidence</h1><p>This site is a static rendering of a proposed pattern discipline and an exploratory repository survey. It deliberately separates a useful record from the evidence that supports it.</p><div class="method-actions"><a class="button button-primary" href="paper.html">Open the paper <span aria-hidden="true">↗</span></a><a class="text-link" href="paper.html#research-agenda">Research agenda <span aria-hidden="true">↓</span></a><a class="text-link" href="./#catalog">Return to the catalog</a></div></header>
 
   <section class="method-section" id="evidence-key"><div class="method-section-number">01</div><div><h2>Evidence key</h2><p class="method-lead">A pattern label, a lexical cue, a source-located mechanism, and a reviewed contract are not interchangeable.</p><div class="evidence-ladder"><div><span>E0 / PROPOSED</span><h3>Pattern specification</h3><p>The context, trigger, structure, effect, contract, variation, test obligation, and negative control define a candidate mechanism. A specification does not assert repository conformance.</p></div><div><span>E1 / RETRIEVAL</span><h3>Exploratory retrieval cue</h3><p>A frozen regular expression or structural matcher finds a place to inspect. A hit is not a confirmed implementation. Coverage counts any available evidence layer and is not a prevalence estimate.</p></div><div><span>E2 / SOURCE</span><h3>Source-located exemplar</h3><p>A repository, immutable commit, and implementation locator identify a concrete example. The atlas holds at most one canonical exemplar per candidate, so it cannot measure cross-repository contract depth.</p></div><div><span>E3 / CONTRACT</span><h3>Executable or contract support</h3><p>Ordering, errors, or boundaries need additional executable or contract evidence. The initiative does not infer E3 from the presence of a source anchor.</p></div></div><aside class="review-boundary"><h3>Human / AI review boundary</h3><p>The study used owner-authorized AI-assisted annotation. Its 200 role-conditioned profiles cover only 16 exact structural candidates and measure one model’s consistency, not independent human agreement. Six pointcuts received majority support, eight were rejected, and two remained unresolved in that bounded sensitivity analysis. Independent human validation remains open.</p></aside></div></section>
 
@@ -1602,16 +1679,18 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--study", type=Path, default=ROOT.parent / "pattern-mining-study")
     parser.add_argument("--paper", type=Path, default=ROOT.parent / "POHE_complete/main.pdf")
+    parser.add_argument("--from-export", action="store_true", help="Render HTML from the committed catalog; keep frozen data, diagrams, and paper unchanged.")
     args = parser.parse_args()
     study = args.study.resolve()
-    data = load_data(study, args.paper)
+    data = json.loads((ROOT / "data/patterns.json").read_text(encoding="utf-8")) if args.from_export else load_data(study, args.paper)
     if data["record_count"] != 52 or [p["id"] for p in data["patterns"]] != EXPECTED_IDS:
         raise ValueError("Catalog must contain exactly P01–P29, W01–W07, C01–C04, R01–R02, E01–E10")
     if set(EXAMPLES) != set(EXPECTED_IDS):
         missing = sorted(set(EXPECTED_IDS) - set(EXAMPLES))
         extra = sorted(set(EXAMPLES) - set(EXPECTED_IDS))
         raise ValueError(f"Examples must cover every record; missing={missing}, extra={extra}")
-    write_text(ROOT / "data/patterns.json", json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+    if not args.from_export:
+        write_text(ROOT / "data/patterns.json", json.dumps(data, ensure_ascii=False, indent=2) + "\n")
     write_text(ROOT / "initiative.html", render_initiative())
     write_text(ROOT / "index.html", render_index(data["patterns"]))
     write_text(ROOT / "inventory.html", render_inventory(data))
@@ -1621,6 +1700,8 @@ def main() -> None:
     write_text(ROOT / "method.html", render_method(data))
     for index, pattern in enumerate(data["patterns"]):
         write_text(ROOT / "patterns" / pattern["id"] / "index.html", render_detail(pattern, EXPECTED_IDS[(index - 1) % 52], EXPECTED_IDS[(index + 1) % 52]))
+        if args.from_export:
+            continue
         for suffix in ("svg", "pdf"):
             source = study / "reports/pattern_diagrams" / suffix / f"{pattern['id']}.{suffix}"
             target = ROOT / "assets/diagrams" / f"{pattern['id']}.{suffix}"
@@ -1637,6 +1718,9 @@ def main() -> None:
             target.parent.mkdir(parents=True, exist_ok=True)
             if not target.exists() or sha256(source) != sha256(target):
                 shutil.copyfile(source, target)
+    if args.from_export:
+        print("Rendered 59 HTML pages from the committed catalog; frozen assets unchanged.")
+        return
     paper_target = ROOT / "assets/paper/pohe-position.pdf"
     paper_target.parent.mkdir(parents=True, exist_ok=True)
     if not paper_target.exists() or sha256(args.paper) != sha256(paper_target):

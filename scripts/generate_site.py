@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the standalone POHE field guide from the frozen study artifacts.
+"""Generate the standalone POHE initiative site from the frozen study artifacts.
 
 PyYAML is used when installed so the frozen protocol files parse exactly as the
 study reads them; a small stdlib-only YAML reader remains as a fallback.
@@ -206,12 +206,13 @@ def nav(prefix: str, current: str) -> str:
     return f"""
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
-  <a class="wordmark" href="{prefix}./" aria-label="POHE field guide home">
+  <a class="wordmark" href="{prefix}./" aria-label="POHE initiative home">
     <svg class="mark" viewBox="0 0 42 42" aria-hidden="true"><path d="M4 4h34v34H4zM4 14h34M14 4v34M14 14l12 12M26 14v12H14"/><circle cx="14" cy="14" r="2.5"/><circle cx="26" cy="26" r="2.5"/></svg>
-    <span><strong>POHE</strong><small>Engineering field guide</small></span>
+    <span><strong>POHE</strong><small>An open engineering initiative</small></span>
   </a>
   <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Index</span><i aria-hidden="true"></i></button>
   <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+    <a href="{prefix}initiative.html"{' aria-current="page"' if current == 'initiative' else ''}>Initiative</a>
     <a href="{prefix}./#catalog"{' aria-current="page"' if current == 'catalog' else ''}>Catalog <sup>52</sup></a>
     <a href="{prefix}agent.html"{' aria-current="page"' if current == 'agent' else ''}>Agent</a>
     <a href="{prefix}experiments.html"{' aria-current="page"' if current == 'experiments' else ''}>Experiments</a>
@@ -289,9 +290,9 @@ def shell(title: str, description: str, body: str, prefix: str = "", current: st
 {nav(prefix, current)}
 {body}
 <footer class="site-footer">
-  <div><strong>POHE</strong> / Pattern-Oriented Harness Engineering<br><span class="footer-author">Haoyi Xiong</span></div>
-  <p>A proposed discipline for recurring harness decisions. Specifications and analytical diagrams do not certify implementations.</p>
-  <div class="footer-links"><a href="{prefix}method.html#evidence-key">How to read the evidence</a><a href="{prefix}method.html#colophon">Colophon</a></div>
+  <div><strong>POHE Initiative</strong> / Pattern-Oriented Harness Engineering<br><span class="footer-author">Founded by Haoyi Xiong</span></div>
+  <p>An open research and engineering initiative for durable, auditable agent-harness responsibilities. Specifications and analytical diagrams do not certify implementations.</p>
+  <div class="footer-links"><a href="{prefix}initiative.html">About the initiative</a><a href="{prefix}method.html#evidence-key">How to read the evidence</a><a href="{prefix}method.html#colophon">Colophon</a><a href="https://github.com/harness-pattern/pohe">GitHub</a></div>
   <p class="footer-disclosure">Analytical diagrams, prompt sketches, and code designs describe proposed contracts. They are not observed traces, repository class declarations, or evidence that any implementation conforms.</p>
 </footer>
 </body>
@@ -480,7 +481,7 @@ pohe-agent scan /path/to/your/harness</code></pre></div>
   </section>
 
   <aside class="agent-cta">
-    <div><span class="section-index">START HERE</span><h2>Read the agent. Then read your harness.</h2><p>The repository contains the instructions, the skills, the catalog, and the CLI. The field guide remains the reference for every record.</p></div>
+    <div><span class="section-index">START HERE</span><h2>Read the agent. Then read your harness.</h2><p>The repository contains the instructions, the skills, the catalog, and the CLI. The initiative's catalog remains the reference for every record.</p></div>
     <div class="agent-cta-actions"><a class="button button-primary" href="https://github.com/xhyccc/pohe-agent">GitHub / pohe-agent <span aria-hidden="true">↗</span></a><a class="text-link" href="./#catalog">Browse the 52 records <span aria-hidden="true">↗</span></a></div>
   </aside>
 </main>"""
@@ -490,6 +491,36 @@ pohe-agent scan /path/to/your/harness</code></pre></div>
         body,
         current="agent",
         canonical="agent.html",
+    )
+
+
+def render_initiative() -> str:
+    body = """
+<main id="main-content" class="method-page initiative-page">
+  <header class="method-hero initiative-hero">
+    <span class="section-index">POHE / OPEN INITIATIVE</span>
+    <h1>A discipline for the<br><em>system around the model.</em></h1>
+    <p>POHE is an open research and engineering initiative. We build shared vocabulary, evidence, review, and tooling for agent harnesses: the executable layer that assembles context, exposes tools, enforces permissions, maintains state, evaluates work, and decides when to stop.</p>
+    <div class="method-actions"><a class="button button-primary" href="./#catalog">Explore the catalog <span aria-hidden="true">↓</span></a><a class="text-link" href="paper.html">Read the position paper <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/harness-pattern/pohe/issues/new">Contribute on GitHub <span aria-hidden="true">↗</span></a></div>
+    <ul class="initiative-metrics" aria-label="Initiative at a glance"><li><strong>52</strong><span>candidate records</span></li><li><strong>36</strong><span>repository families</span></li><li><strong>H1–H3</strong><span>falsifiable agenda</span></li><li><strong>Open</strong><span>review and participation</span></li></ul>
+  </header>
+
+  <section class="method-section" id="mission"><div class="method-section-number">01</div><div><h2>Why an initiative</h2><p class="method-lead">Models absorb scaffolding. They do not automatically absorb accountability.</p><p>As model capability improves, more context management, tool choice, and review can move into the model. Authorization, acceptance, audit, recovery, and termination remain system obligations: someone or something must establish who may act, what evidence counts as acceptance, what survives a failure, and when execution must stop.</p><p>In practice these obligations are often recorded only as component names or implementation details. Teams rediscover the same harness decisions under different labels, and a rewrite can silently remove the guarantee that made the original design safe. POHE exists to make those obligations durable, reviewable, and comparable through change.</p><div class="initiative-principles"><article><span>01 / CONTRACT</span><h3>Contract before label</h3><p>A pattern name is only useful when it identifies the obligation that must hold and the variation that is permitted.</p></article><article><span>02 / EVIDENCE</span><h3>Evidence before claim</h3><p>A keyword match, a source-located exemplar, and a tested contract are different evidence levels. The initiative keeps them separate.</p></article><article><span>03 / AUTHORITY</span><h3>Independent authority</h3><p>The proposal, execution, acceptance, and audit paths should not collapse into one self-certifying loop.</p></article><article><span>04 / FALSIFICATION</span><h3>Open falsification</h3><p>Every research claim should name the observation that would weaken or reject it. H1–H3 are public research targets, not settled results.</p></article></div></div></section>
+
+  <section class="method-section" id="workstreams"><div class="method-section-number">02</div><div><h2>What the initiative maintains</h2><p class="method-lead">The website is the public working surface of POHE, not a static brochure.</p><div class="initiative-grid"><article class="initiative-card"><span>CATALOG</span><h3>A pattern language</h3><p>Fifty-two candidate records connect recurring harness mechanisms to protected contracts, variation seams, authority, evidence, and lifecycle conditions.</p><a class="text-link" href="./#catalog">Browse the records <span aria-hidden="true">→</span></a></article><article class="initiative-card"><span>METHOD</span><h3>Evidence and reproducibility</h3><p>Frozen inputs, source provenance, retrieval instruments, evidence levels, and explicit limitations make the claims inspectable.</p><a class="text-link" href="method.html">Read the method <span aria-hidden="true">→</span></a></article><article class="initiative-card"><span>REVIEW</span><h3>Independent human review</h3><p>The H2 review protocol collects source-grounded, pseudonymous judgments without exposing agent labels or prior reviews.</p><a class="text-link" href="reviews/h2/">Join the review <span aria-hidden="true">→</span></a></article><article class="initiative-card"><span>TOOLS + TESTS</span><h3>Applied instruments</h3><p>The pohe-agent toolkit and executed harness-evolution experiments turn the record into something teams can inspect and test.</p><a class="text-link" href="agent.html">Open the toolkit <span aria-hidden="true">→</span></a></article></div></div></section>
+
+  <section class="method-section" id="participate"><div class="method-section-number">03</div><div><h2>How to take part</h2><p class="method-lead">POHE becomes useful when teams can test it on their own harness and publish what survives.</p><ol class="loop-list"><li><b>Map a responsibility.</b> Pick one consequential harness obligation, name its join point, and state what may vary.</li><li><b>Try the instrument.</b> Run <code>pohe-agent</code> against a repository and separate retrieval cues from structural evidence.</li><li><b>Review a record.</b> Contribute an independent H2 judgment from the frozen source excerpts.</li><li><b>Report a case.</b> Open an issue with a field case, contract test, counterexample, or an implementation that the record fails to explain.</li><li><b>Replicate a study.</b> Test H1 persistence or H3 record value under a design that can falsify the claim.</li></ol></div></section>
+
+  <section class="method-section" id="status"><div class="method-section-number">04</div><div><h2>Status and boundaries</h2><p>The initiative is deliberately explicit about what is established, what is demonstrated in an apparatus, and what remains prospective.</p><ul class="limitations-list"><li>The 52 records are a scoped candidate inventory, not a prevalence estimate.</li><li>Source anchors are worked exemplars, not evidence that other repositories conform to the proposed contract.</li><li>The H2 testbed demonstrates mechanisms under controlled software conditions; it is not a field estimate of effectiveness.</li><li>H1 and H3 remain prospective research programs, and independent human adjudication remains open.</li><li>The pattern records and diagrams describe proposed obligations; they do not certify any implementation.</li></ul></div></section>
+
+  <section class="method-section" id="join"><div class="method-section-number">05</div><div><div class="initiative-cta"><span class="section-index">BUILD THE COMMON RECORD</span><h2>Bring a harness responsibility into the open.</h2><p>Read the position, inspect the evidence, test a record, or send the case that breaks one.</p><div class="method-actions"><a class="button button-primary" href="paper.html">Read the paper <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/harness-pattern/pohe/issues/new">Open a contribution <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/harness-pattern/pohe">View the repository <span aria-hidden="true">↗</span></a></div></div></div></section>
+</main>"""
+    return shell(
+        "POHE Initiative — Pattern-Oriented Harness Engineering",
+        "POHE is an open research and engineering initiative building an evidence-graded pattern discipline for AI-agent harness responsibilities, review, experiments, and tooling.",
+        body,
+        current="initiative",
+        canonical="initiative.html",
     )
 
 
@@ -503,17 +534,17 @@ def render_index(patterns: list[dict]) -> str:
     body = f"""
 <main id="main-content">
   <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-kicker"><span>Field guide № 01</span><span>Proposed pattern discipline</span></div>
+    <div class="hero-kicker"><span>POHE / Open initiative</span><span>Research + engineering + review</span></div>
     <h1 id="hero-title">Pattern-Oriented <em>Harness Engineering<span class="hero-title-colon">:</span></em><span class="hero-title-sub">Design needs Patterns, when Agentic AI meets OOD</span></h1>
     <div class="hero-grid">
       <div>
-        <p class="hero-deck">A field guide to the recurring decisions around AI agents: what may vary, what must hold, and what happens when it does not.</p>
-        <ol class="hero-questions" aria-label="Three questions this field guide asks">
+        <p class="hero-deck">POHE is an open initiative building a shared, evidence-graded pattern discipline for AI-agent harnesses: what may vary, what must hold, and what happens when it does not.</p>
+        <ol class="hero-questions" aria-label="Three questions the initiative asks">
           <li><span class="hero-q-tag">H1</span><p class="hero-q">When a prompt or code snapshot may be replaced within days, what is the asset of harness engineering?</p></li>
           <li><span class="hero-q-tag">H2</span><p class="hero-q">Design patterns and POSA separated what rarely changes from what may be customized. Must harness engineering keep that separation of concerns—and its boundary?</p></li>
           <li><span class="hero-q-tag">H3</span><p class="hero-q">Does bounded self-improvement with explicit variation boundaries drift less, regress less, recover faster, and attribute changes more clearly than unconstrained revision?</p></li>
         </ol>
-        <div class="hero-actions"><a class="button button-primary" href="#catalog">Browse the 52 records <span aria-hidden="true">↓</span></a><a class="text-link" href="method.html">Read the method <span aria-hidden="true">↗</span></a></div>
+        <div class="hero-actions"><a class="button button-primary" href="initiative.html">About the initiative <span aria-hidden="true">→</span></a><a class="text-link" href="#catalog">Browse the 52 records <span aria-hidden="true">↓</span></a><a class="text-link" href="method.html">Read the method <span aria-hidden="true">↗</span></a></div>
       </div>
       <aside class="hero-note" aria-label="Position statement">
         <span class="note-label">Position / 001</span>
@@ -535,12 +566,18 @@ def render_index(patterns: list[dict]) -> str:
     <div class="inventory-line"><div class="stat"><strong>52</strong><span>candidate records</span></div><div class="stat"><strong>05</strong><span>source families</span></div><div class="stat"><strong>03</strong><span>activity coordinates</span></div><small>Inventory size, not a prevalence claim.</small></div>
   </section>
 
+  <section class="initiative-banner" id="initiative" aria-labelledby="initiative-title">
+    <div><span class="section-index">THE POHE INITIATIVE</span><h2 id="initiative-title">A shared language for the system around the model.</h2></div>
+    <p>POHE brings researchers and harness builders together around one durable unit: the responsibility that must survive a change. The initiative maintains the pattern catalog, evidence method, independent review, experiments, and open tooling behind that work.</p>
+    <a class="button button-ghost" href="initiative.html">Read the initiative charter <span aria-hidden="true">→</span></a>
+  </section>
+
   <section class="family-section" aria-labelledby="family-title"><div class="section-index">05 / SOURCE FAMILIES</div><h2 id="family-title" class="visually-hidden">Five source families</h2><div class="family-rules">{family_rules}</div><p class="section-footnote">Families record provenance, not another taxonomy axis. E records are research mechanisms, not claims of independently established recurring patterns.</p></section>
 
   <section class="catalog-section" id="catalog" aria-labelledby="catalog-title">
     <div class="catalog-heading"><div><span class="section-index">INDEX / 001—052</span><h2 id="catalog-title">Pattern catalog</h2></div><p>Search by responsibility, mechanism, or join point. Filter without losing the underlying record.</p></div>
     <form class="filters" id="filters" role="search" aria-label="Filter pattern catalog">
-      <div class="search-field"><label for="pattern-search">Search the field guide</label><input id="pattern-search" name="q" type="search" placeholder="Try ‘sandbox’, ‘state’, or ‘stop’…" autocomplete="off" spellcheck="false"><span aria-hidden="true">⌕</span></div>
+      <div class="search-field"><label for="pattern-search">Search the pattern catalog</label><input id="pattern-search" name="q" type="search" placeholder="Try ‘sandbox’, ‘state’, or ‘stop’…" autocomplete="off" spellcheck="false"><span aria-hidden="true">⌕</span></div>
       <div class="select-field"><label for="family-filter">Source family</label><select id="family-filter" name="family"><option value="all">All five families</option>{family_options}</select></div>
       <div class="select-field"><label for="activity-filter">A² activity</label><select id="activity-filter" name="activity"><option value="all">All activities</option>{activity_options}</select></div>
       <div class="select-field"><label for="hypothesis-filter">Research hypothesis</label><select id="hypothesis-filter" name="hypothesis"><option value="all">All hypotheses</option>{hypothesis_options}</select></div>
@@ -554,7 +591,7 @@ def render_index(patterns: list[dict]) -> str:
   </section>
 
 </main>"""
-    return shell("POHE — Pattern-Oriented Harness Engineering: Design needs Patterns, when Agentic AI meets OOD", "An engineering field guide to 52 candidate patterns for agent harnesses: UML class views, pointcuts, contracts, variation, prompt and code design sketches, evidence, and lifecycle.", body, current="catalog")
+    return shell("POHE Initiative — Pattern-Oriented Harness Engineering", "An open research and engineering initiative for AI-agent harnesses: a 52-record pattern catalog, evidence method, independent review, experiments, and open tooling.", body, current="catalog")
 
 
 def anchor_html(anchor: dict) -> str:
@@ -1386,7 +1423,7 @@ def render_method(data: dict) -> str:
 <main id="main-content" class="method-page">
   <header class="method-hero"><span class="section-index">METHOD / EVIDENCE / REPRODUCIBILITY</span><h1>Claims should carry<br><em>their own boundaries.</em></h1><p>This site is a static rendering of a proposed pattern discipline and an exploratory repository survey. It deliberately separates a useful record from the evidence that supports it.</p><div class="method-actions"><a class="button button-primary" href="paper.html">Open the paper <span aria-hidden="true">↗</span></a><a class="text-link" href="paper.html#research-agenda">Research agenda <span aria-hidden="true">↓</span></a><a class="text-link" href="./#catalog">Return to the catalog</a></div></header>
 
-  <section class="method-section" id="evidence-key"><div class="method-section-number">01</div><div><h2>Evidence key</h2><p class="method-lead">A pattern label, a lexical cue, a source-located mechanism, and a reviewed contract are not interchangeable.</p><div class="evidence-ladder"><div><span>E0 / PROPOSED</span><h3>Pattern specification</h3><p>The context, trigger, structure, effect, contract, variation, test obligation, and negative control define a candidate mechanism. A specification does not assert repository conformance.</p></div><div><span>E1 / RETRIEVAL</span><h3>Exploratory retrieval cue</h3><p>A frozen regular expression or structural matcher finds a place to inspect. A hit is not a confirmed implementation. Coverage counts any available evidence layer and is not a prevalence estimate.</p></div><div><span>E2 / SOURCE</span><h3>Source-located exemplar</h3><p>A repository, immutable commit, and implementation locator identify a concrete example. The atlas holds at most one canonical exemplar per candidate, so it cannot measure cross-repository contract depth.</p></div><div><span>E3 / CONTRACT</span><h3>Executable or contract support</h3><p>Ordering, errors, or boundaries need additional executable or contract evidence. The field guide does not infer E3 from the presence of a source anchor.</p></div></div><aside class="review-boundary"><h3>Human / AI review boundary</h3><p>The study used owner-authorized AI-assisted annotation. Its 200 role-conditioned profiles cover only 16 exact structural candidates and measure one model’s consistency, not independent human agreement. Six pointcuts received majority support, eight were rejected, and two remained unresolved in that bounded sensitivity analysis. Independent human validation remains open.</p></aside></div></section>
+  <section class="method-section" id="evidence-key"><div class="method-section-number">01</div><div><h2>Evidence key</h2><p class="method-lead">A pattern label, a lexical cue, a source-located mechanism, and a reviewed contract are not interchangeable.</p><div class="evidence-ladder"><div><span>E0 / PROPOSED</span><h3>Pattern specification</h3><p>The context, trigger, structure, effect, contract, variation, test obligation, and negative control define a candidate mechanism. A specification does not assert repository conformance.</p></div><div><span>E1 / RETRIEVAL</span><h3>Exploratory retrieval cue</h3><p>A frozen regular expression or structural matcher finds a place to inspect. A hit is not a confirmed implementation. Coverage counts any available evidence layer and is not a prevalence estimate.</p></div><div><span>E2 / SOURCE</span><h3>Source-located exemplar</h3><p>A repository, immutable commit, and implementation locator identify a concrete example. The atlas holds at most one canonical exemplar per candidate, so it cannot measure cross-repository contract depth.</p></div><div><span>E3 / CONTRACT</span><h3>Executable or contract support</h3><p>Ordering, errors, or boundaries need additional executable or contract evidence. The initiative does not infer E3 from the presence of a source anchor.</p></div></div><aside class="review-boundary"><h3>Human / AI review boundary</h3><p>The study used owner-authorized AI-assisted annotation. Its 200 role-conditioned profiles cover only 16 exact structural candidates and measure one model’s consistency, not independent human agreement. Six pointcuts received majority support, eight were rejected, and two remained unresolved in that bounded sensitivity analysis. Independent human validation remains open.</p></aside></div></section>
 
   <section class="method-section"><div class="method-section-number">02</div><div><h2>Frozen inputs</h2><p>The rendered catalog uses the supplied candidate manifest, pointcut specification, interaction models, canonical atlas, and any-evidence coverage table. Repository clones, caches, evidence packets, and raw evidence are intentionally excluded from this site.</p><dl class="fact-grid"><div><dt>Inventory</dt><dd>52 records / five source families</dd></div><div><dt>Survey panel</dt><dd>41 repositories / 36 families</dd></div><div><dt>Specification</dt><dd>v{esc(data['spec_version'])}</dd></div><div><dt>Diagram models</dt><dd>v{esc(data['diagram_version'])} / analytical</dd></div><div><dt>Study checkout</dt><dd><code>{esc(data['study_revision'])}</code></dd></div><div><dt>Detector environment</dt><dd><code>PyYAML==6.0.3</code><br><code>pandas==2.3.3</code></dd></div></dl><h3>Input and detector SHA-256</h3><p>These hashes identify the exact local inputs used for this rendering. A hash supplies integrity, not validity.</p><div class="hash-table-wrap"><table class="hash-table"><thead><tr><th>Study-relative file</th><th>SHA-256</th></tr></thead><tbody>{hash_rows}</tbody></table></div></div></section>
 
@@ -1410,17 +1447,17 @@ make cartesian
 
 # Layered discovery and separately reviewed overlay
 make layered-overlay
-make coverage-funnel</code></pre><h3>Rebuild this field guide</h3><pre class="command-block"><code>python3 scripts/generate_site.py
+make coverage-funnel</code></pre><h3>Rebuild this site</h3><pre class="command-block"><code>python3 scripts/generate_site.py
 python3 -I tests/validate_site.py
-python3 -m http.server 8000</code></pre><p>The generator uses PyYAML with a stdlib fallback and expects <code>../pattern-mining-study</code> and <code>../POHE_complete/main.pdf</code> by default; <code>--study</code> and <code>--paper</code> override those paths.</p><h3>Source repository</h3><p>The supplied study checkout has no configured public remote. This field guide therefore does not invent an external study-repository URL. Canonical source anchors link directly to the named public implementation repository at the recorded commit. The complete local paper is available as <a href="assets/paper/pohe-position.pdf">the companion PDF</a>.</p></div></section>
+python3 -m http.server 8000</code></pre><p>The generator uses PyYAML with a stdlib fallback and expects <code>../pattern-mining-study</code> and <code>../POHE_complete/main.pdf</code> by default; <code>--study</code> and <code>--paper</code> override those paths.</p><h3>Source repository</h3><p>The supplied study checkout has no configured public remote. This initiative site therefore does not invent an external study-repository URL. Canonical source anchors link directly to the named public implementation repository at the recorded commit. The complete local paper is available as <a href="assets/paper/pohe-position.pdf">the companion PDF</a>.</p></div></section>
 
   <section class="method-section limitations-section"><div class="method-section-number">06</div><div><h2>Limitations</h2><ul class="limitations-list"><li>The 52 records are a scoped candidate inventory, not 52 disjoint or universally established mechanisms.</li><li>Current cue coverage is descriptive retrieval in a selected frozen panel, <strong>not a prevalence denominator</strong> or confirmed prevalence.</li><li>Locating a source-backed exemplar for 51 of 52 records does not establish frequency, generality, or contract conformance elsewhere. E08 remains specification-only.</li><li>Lexical detectors have false-positive and construction-leakage risks. Exact structural matching and one-model profile coding do not replace independent adjudication. The post-freeze <a href="https://github.com/xhyccc/pohe-agent/blob/main/docs/calibration.md">scope-anchored calibration</a> is an instrument check; its <code>source_matched</code> verdict is not E2/E3.</li><li>A² is a proposed analytical lens, not a validated lifecycle model. Recording a contract does not enforce it.</li><li>H1–H3 are prospective, design-only studies. No causal performance, safety, cost, or reliability benefit follows from repository association.</li><li>The complete paper PDF is an unpublished, untagged preview, not an accessibility-compliant publication file.</li></ul></div></section>
 
   <section class="method-section research-agenda-pointer"><div class="method-section-number">07</div><div><h2>Research agenda</h2><p>The Paper page carries the full H1–H3 agenda: stable design commitments, mechanized agency, and controlled variation, with evidence and falsification boundaries attached to each claim.</p><a class="text-link" href="paper.html#research-agenda">Read the research agenda on the Paper page <span aria-hidden="true">↗</span></a></div></section>
 
-  <section class="method-section colophon-section" id="colophon"><div class="method-section-number">◇</div><div><h2>Colophon: why this field guide exists</h2><p class="colophon-byline">By Haoyi Xiong</p><p class="method-lead">It continues an unpublished master’s research project on design patterns.</p><p>That project asked what this one still asks: when does a recurring solution become a pattern, and what must a record say before anyone else can use it? The vocabulary here is learned from the Gang of Four’s catalog, Roy T. Fielding’s account of architectural styles in network software, and Douglas C. Schmidt’s writing on distributed-computing patterns and the Pattern-Oriented Software Architecture series.</p><p>Those teachers insisted on the discipline this guide tries to keep: name the join point, state the contract, separate what may vary, and show the evidence. The field guide is dedicated to the research that remained unpublished—and to the readers who can carry the question further.</p><ul class="colophon-links"><li><a href="https://roy.gbiv.com/pubs/dissertation/top.htm">Roy T. Fielding, <em>Architectural Styles and the Design of Network-based Software Architectures</em> (2000)</a></li><li><a href="https://www.dre.vanderbilt.edu/~schmidt/">Douglas C. Schmidt</a> — distributed-computing patterns and the POSA series</li><li>Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides, <em>Design Patterns: Elements of Reusable Object-Oriented Software</em> (1994)</li></ul></div></section>
+  <section class="method-section colophon-section" id="colophon"><div class="method-section-number">◇</div><div><h2>Colophon: why this initiative exists</h2><p class="colophon-byline">By Haoyi Xiong</p><p class="method-lead">It continues an unpublished master’s research project on design patterns.</p><p>That project asked what this one still asks: when does a recurring solution become a pattern, and what must a record say before anyone else can use it? The vocabulary here is learned from the Gang of Four’s catalog, Roy T. Fielding’s account of architectural styles in network software, and Douglas C. Schmidt’s writing on distributed-computing patterns and the Pattern-Oriented Software Architecture series.</p><p>Those teachers insisted on the discipline this initiative tries to keep: name the join point, state the contract, separate what may vary, and show the evidence. The initiative is dedicated to the research that remained unpublished—and to the readers who can carry the question further.</p><ul class="colophon-links"><li><a href="https://roy.gbiv.com/pubs/dissertation/top.htm">Roy T. Fielding, <em>Architectural Styles and the Design of Network-based Software Architectures</em> (2000)</a></li><li><a href="https://www.dre.vanderbilt.edu/~schmidt/">Douglas C. Schmidt</a> — distributed-computing patterns and the POSA series</li><li>Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides, <em>Design Patterns: Elements of Reusable Object-Oriented Software</em> (1994)</li></ul></div></section>
 </main>"""
-    return shell("Method & evidence — POHE", "How the POHE field guide separates proposed specifications, retrieval cues, source exemplars, and review; frozen inputs, hashes, commands, overlays, and limitations.", body, current="method", canonical="method.html")
+    return shell("Method & evidence — POHE Initiative", "How the POHE initiative separates proposed specifications, retrieval cues, source exemplars, and review; frozen inputs, hashes, commands, overlays, and limitations.", body, current="method", canonical="method.html")
 
 
 def load_aliases(study: Path) -> dict[str, list[str]]:
@@ -1554,7 +1591,7 @@ def load_data(study: Path, paper: Path) -> dict:
     except (subprocess.CalledProcessError, FileNotFoundError):
         revision = "unknown"
     return {
-        "schema_version": "1.0.0", "title": "Pattern-Oriented Harness Engineering field guide",
+        "schema_version": "1.0.0", "title": "Pattern-Oriented Harness Engineering initiative",
         "record_count": len(records), "spec_version": spec_doc["version"], "diagram_version": diagram_doc["version"],
         "study_revision": revision, "source_hashes": {path: sha256(study / path) for path in hash_files},
         "patterns": records,
@@ -1575,6 +1612,7 @@ def main() -> None:
         extra = sorted(set(EXAMPLES) - set(EXPECTED_IDS))
         raise ValueError(f"Examples must cover every record; missing={missing}, extra={extra}")
     write_text(ROOT / "data/patterns.json", json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+    write_text(ROOT / "initiative.html", render_initiative())
     write_text(ROOT / "index.html", render_index(data["patterns"]))
     write_text(ROOT / "inventory.html", render_inventory(data))
     write_text(ROOT / "agent.html", render_agent())

@@ -1,15 +1,18 @@
-# POHE — Pattern-Oriented Harness Engineering field guide
+# POHE Initiative — Pattern-Oriented Harness Engineering
 
-A static field guide to 52 candidate harness records for AI agents: execution
-loops, workflows, communication structures, reasoning and feedback mechanisms,
-and harness-evolution research. Each record shows a proposed pointcut, a
-protected contract, permitted variation, an analytical object-interaction
-model, and the evidence layer behind it.
+POHE is an open research and engineering initiative for AI-agent harnesses.
+Its public site maintains a 52-record pattern catalog, an evidence method, an
+independent review protocol, executed experiments, and open tooling. Each
+candidate record shows a proposed pointcut, a protected contract, permitted
+variation, an analytical object-interaction model, and the evidence layer
+behind it.
 
 Published at **https://harness-pattern.github.io/pohe/**
 
-## What this site is
+## What the initiative publishes
 
+- An explicit **initiative charter** covering the mission, workstreams,
+  participation paths, and evidence boundaries.
 - A generated, deterministic rendering of frozen study artifacts. Nothing is
   computed at request time, and the site makes no network calls.
 - An **evidence-layered** catalog. A retrieval cue is not a confirmed
@@ -31,6 +34,7 @@ patterns and the POSA series.
 ## Structure
 
 ```
+initiative.html             mission, workstreams, participation, and boundaries
 index.html                  catalog with search/filter/deep links
 method.html                 evidence key, frozen inputs, and reproduction
 experiments.html            the two executed harness-evolution experiments

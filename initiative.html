@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="POHE is an open research and engineering initiative building an evidence-graded pattern discipline for AI-agent harness responsibilities, review, experiments, and tooling.">
+  <meta name="theme-color" content="#f2eee4">
+  <title>POHE Initiative — Pattern-Oriented Harness Engineering</title>
+  <link rel="canonical" href="https://harness-pattern.github.io/pohe/initiative.html">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="./" aria-label="POHE initiative home">
+    <svg class="mark" viewBox="0 0 42 42" aria-hidden="true"><path d="M4 4h34v34H4zM4 14h34M14 4v34M14 14l12 12M26 14v12H14"/><circle cx="14" cy="14" r="2.5"/><circle cx="26" cy="26" r="2.5"/></svg>
+    <span><strong>POHE</strong><small>An open engineering initiative</small></span>
+  </a>
+  <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Index</span><i aria-hidden="true"></i></button>
+  <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+    <a href="initiative.html" aria-current="page">Initiative</a>
+    <a href="./#catalog">Catalog <sup>52</sup></a>
+    <a href="agent.html">Agent</a>
+    <a href="experiments.html">Experiments</a>
+    <a href="reviews/h2/">Review</a>
+    <a class="paper-link" href="paper.html">Paper</a>
+    <a class="personal-link" href="https://xhyccc.github.io/">About me <span aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main id="main-content" class="method-page initiative-page">
+  <header class="method-hero initiative-hero">
+    <span class="section-index">POHE / OPEN INITIATIVE</span>
+    <h1>A discipline for the<br><em>system around the model.</em></h1>
+    <p>POHE is an open research and engineering initiative. We build shared vocabulary, evidence, review, and tooling for agent harnesses: the executable layer that assembles context, exposes tools, enforces permissions, maintains state, evaluates work, and decides when to stop.</p>
+    <div class="method-actions"><a class="button button-primary" href="./#catalog">Explore the catalog <span aria-hidden="true">↓</span></a><a class="text-link" href="paper.html">Read the position paper <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/harness-pattern/pohe/issues/new">Contribute on GitHub <span aria-hidden="true">↗</span></a></div>
+    <ul class="initiative-metrics" aria-label="Initiative at a glance"><li><strong>52</strong><span>candidate records</span></li><li><strong>36</strong><span>repository families</span></li><li><strong>H1–H3</strong><span>falsifiable agenda</span></li><li><strong>Open</strong><span>review and participation</span></li></ul>
+  </header>
+
+  <section class="method-section" id="mission"><div class="method-section-number">01</div><div><h2>Why an initiative</h2><p class="method-lead">Models absorb scaffolding. They do not automatically absorb accountability.</p><p>As model capability improves, more context management, tool choice, and review can move into the model. Authorization, acceptance, audit, recovery, and termination remain system obligations: someone or something must establish who may act, what evidence counts as acceptance, what survives a failure, and when execution must stop.</p><p>In practice these obligations are often recorded only as component names or implementation details. Teams rediscover the same harness decisions under different labels, and a rewrite can silently remove the guarantee that made the original design safe. POHE exists to make those obligations durable, reviewable, and comparable through change.</p><div class="initiative-principles"><article><span>01 / CONTRACT</span><h3>Contract before label</h3><p>A pattern name is only useful when it identifies the obligation that must hold and the variation that is permitted.</p></article><article><span>02 / EVIDENCE</span><h3>Evidence before claim</h3><p>A keyword match, a source-located exemplar, and a tested contract are different evidence levels. The initiative keeps them separate.</p></article><article><span>03 / AUTHORITY</span><h3>Independent authority</h3><p>The proposal, execution, acceptance, and audit paths should not collapse into one self-certifying loop.</p></article><article><span>04 / FALSIFICATION</span><h3>Open falsification</h3><p>Every research claim should name the observation that would weaken or reject it. H1–H3 are public research targets, not settled results.</p></article></div></div></section>
+
+  <section class="method-section" id="workstreams"><div class="method-section-number">02</div><div><h2>What the initiative maintains</h2><p class="method-lead">The website is the public working surface of POHE, not a static brochure.</p><div class="initiative-grid"><article class="initiative-card"><span>CATALOG</span><h3>A pattern language</h3><p>Fifty-two candidate records connect recurring harness mechanisms to protected contracts, variation seams, authority, evidence, and lifecycle conditions.</p><a class="text-link" href="./#catalog">Browse the records <span aria-hidden="true">→</span></a></article><article class="initiative-card"><span>METHOD</span><h3>Evidence and reproducibility</h3><p>Frozen inputs, source provenance, retrieval instruments, evidence levels, and explicit limitations make the claims inspectable.</p><a class="text-link" href="method.html">Read the method <span aria-hidden="true">→</span></a></article><article class="initiative-card"><span>REVIEW</span><h3>Independent human review</h3><p>The H2 review protocol collects source-grounded, pseudonymous judgments without exposing agent labels or prior reviews.</p><a class="text-link" href="reviews/h2/">Join the review <span aria-hidden="true">→</span></a></article><article class="initiative-card"><span>TOOLS + TESTS</span><h3>Applied instruments</h3><p>The pohe-agent toolkit and executed harness-evolution experiments turn the record into something teams can inspect and test.</p><a class="text-link" href="agent.html">Open the toolkit <span aria-hidden="true">→</span></a></article></div></div></section>
+
+  <section class="method-section" id="participate"><div class="method-section-number">03</div><div><h2>How to take part</h2><p class="method-lead">POHE becomes useful when teams can test it on their own harness and publish what survives.</p><ol class="loop-list"><li><b>Map a responsibility.</b> Pick one consequential harness obligation, name its join point, and state what may vary.</li><li><b>Try the instrument.</b> Run <code>pohe-agent</code> against a repository and separate retrieval cues from structural evidence.</li><li><b>Review a record.</b> Contribute an independent H2 judgment from the frozen source excerpts.</li><li><b>Report a case.</b> Open an issue with a field case, contract test, counterexample, or an implementation that the record fails to explain.</li><li><b>Replicate a study.</b> Test H1 persistence or H3 record value under a design that can falsify the claim.</li></ol></div></section>
+
+  <section class="method-section" id="status"><div class="method-section-number">04</div><div><h2>Status and boundaries</h2><p>The initiative is deliberately explicit about what is established, what is demonstrated in an apparatus, and what remains prospective.</p><ul class="limitations-list"><li>The 52 records are a scoped candidate inventory, not a prevalence estimate.</li><li>Source anchors are worked exemplars, not evidence that other repositories conform to the proposed contract.</li><li>The H2 testbed demonstrates mechanisms under controlled software conditions; it is not a field estimate of effectiveness.</li><li>H1 and H3 remain prospective research programs, and independent human adjudication remains open.</li><li>The pattern records and diagrams describe proposed obligations; they do not certify any implementation.</li></ul></div></section>
+
+  <section class="method-section" id="join"><div class="method-section-number">05</div><div><div class="initiative-cta"><span class="section-index">BUILD THE COMMON RECORD</span><h2>Bring a harness responsibility into the open.</h2><p>Read the position, inspect the evidence, test a record, or send the case that breaks one.</p><div class="method-actions"><a class="button button-primary" href="paper.html">Read the paper <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/harness-pattern/pohe/issues/new">Open a contribution <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/harness-pattern/pohe">View the repository <span aria-hidden="true">↗</span></a></div></div></div></section>
+</main>
+<footer class="site-footer">
+  <div><strong>POHE Initiative</strong> / Pattern-Oriented Harness Engineering<br><span class="footer-author">Founded by Haoyi Xiong</span></div>
+  <p>An open research and engineering initiative for durable, auditable agent-harness responsibilities. Specifications and analytical diagrams do not certify implementations.</p>
+  <div class="footer-links"><a href="initiative.html">About the initiative</a><a href="method.html#evidence-key">How to read the evidence</a><a href="method.html#colophon">Colophon</a><a href="https://github.com/harness-pattern/pohe">GitHub</a></div>
+  <p class="footer-disclosure">Analytical diagrams, prompt sketches, and code designs describe proposed contracts. They are not observed traces, repository class declarations, or evidence that any implementation conforms.</p>
+</footer>
+</body>
+</html>

@@ -1,4 +1,4 @@
-name: Deploy POHE field guide to GitHub Pages
+name: Deploy POHE initiative site to GitHub Pages
 
 on:
   push:

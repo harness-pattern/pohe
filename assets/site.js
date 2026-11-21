@@ -1,4 +1,4 @@
-/* POHE field guide — progressive enhancement only.
+/* POHE initiative — progressive enhancement only.
    Filtering, deep links, and the small-screen navigation.
    No network requests: everything is already in the document. */
 

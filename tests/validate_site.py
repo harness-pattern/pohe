@@ -225,6 +225,30 @@ class SiteIntegrityTests(unittest.TestCase):
         for status in ("source_located", "specification_only", "current_cue", "no_current_cue"):
             self.assertIn(f'value="{status}"', text)
         self.assertIn("coverage is not confirmed prevalence", text.lower())
+        self.assertIn('id="initiative"', text)
+        self.assertIn('href="initiative.html"', text)
+
+    def test_initiative_page_states_mission_and_boundaries(self) -> None:
+        text, parser = parse_document(ROOT / "initiative.html")
+        self.assertTrue(parser.has_main)
+        for phrase in (
+            "POHE / OPEN INITIATIVE",
+            "open research and engineering initiative",
+            "Contract before label",
+            "Evidence before claim",
+            "Independent authority",
+            "Open falsification",
+            "What the initiative maintains",
+            "How to take part",
+            "Status and boundaries",
+            "candidate inventory, not a prevalence estimate",
+            "H1 and H3 remain prospective",
+        ):
+            self.assertIn(phrase, text)
+        self.assertIn('href="initiative.html" aria-current="page"', text)
+        self.assertIn('href="./#catalog"', text)
+        self.assertIn('href="reviews/h2/"', text)
+        self.assertIn("https://github.com/harness-pattern/pohe/issues/new", text)
 
     def test_hypothesis_lens_mapping_and_band(self) -> None:
         mapping = {"A1": "H1", "A2": "H2", "A3": "H3"}
@@ -259,7 +283,7 @@ class SiteIntegrityTests(unittest.TestCase):
                 self.assertIn('href="../../paper.html#research-agenda"', detail_text)
 
     def test_page_metadata_and_accessibility_shell(self) -> None:
-        pages = [ROOT / "index.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "experiments.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
+        pages = [ROOT / "index.html", ROOT / "initiative.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "experiments.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
         for page in pages:
             with self.subTest(page=page.relative_to(ROOT)):
                 text, parser = parse_document(page)
@@ -278,7 +302,7 @@ class SiteIntegrityTests(unittest.TestCase):
                 self.assertIn("About me", text)
 
     def test_all_local_html_references_resolve(self) -> None:
-        pages = [ROOT / "index.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "experiments.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
+        pages = [ROOT / "index.html", ROOT / "initiative.html", ROOT / "inventory.html", ROOT / "agent.html", ROOT / "experiments.html", ROOT / "method.html", ROOT / "paper.html"] + [ROOT / "patterns" / pid / "index.html" for pid in EXPECTED_IDS]
         for page in pages:
             _, parser = parse_document(page)
             for reference in parser.references:
@@ -394,7 +418,7 @@ class SiteIntegrityTests(unittest.TestCase):
                 for anchor in re.findall(r"<a\b[^>]*>(.*?)</a>", match.group(0), re.S):
                     anchor = re.sub(r"<(sup|span)\b.*?</\1>", "", anchor, flags=re.S)
                     labels.append(html.unescape(re.sub(r"<[^>]+>", "", anchor)).strip())
-                self.assertEqual(labels, ["Catalog", "Agent", "Experiments", "Review", "Paper", "About me"])
+                self.assertEqual(labels, ["Initiative", "Catalog", "Agent", "Experiments", "Review", "Paper", "About me"])
                 paper_link = re.search(r'<a class="paper-link" href="([^"]+)"', match.group(0))
                 self.assertIsNotNone(paper_link)
                 expected_paper_href = "paper.html" if page.parent == ROOT else "../../paper.html"

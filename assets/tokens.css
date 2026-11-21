@@ -1,0 +1,53 @@
+/* GitHub-style engineering reference: neutral surfaces and restrained link color. */
+:root {
+  color-scheme: light;
+  --paper: #ffffff; --paper-raised: #ffffff; --paper-sunk: #f6f8fa;
+  --ink: #1f2328; --ink-soft: #59636e; --ink-faint: #6e7781;
+  --rule: #d1d9e0; --rule-soft: #eaeef2;
+  --accent: #0969da; --accent-soft: #ddf4ff;
+  --blueprint: #0969da; --blueprint-soft: #ddf4ff;
+  --mint: #38745a; --mint-soft: #eef5f0;
+  --warn: #8a6c30; --warn-soft: #fbf7ed;
+  --danger: #b54a4a; --button: #1f2328; --button-hover: #32383f; --button-text: #fff;
+  --shadow: none; --radius: 6px;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, sans-serif;
+  --serif: var(--sans);
+  --mono: ui-monospace, "SFMono-Regular", "Liberation Mono", Menlo, Consolas, monospace;
+  --max: 1280px; --gutter: 32px;
+  --fam-P: #59636e; --fam-P-soft: #f2f2f0;
+  --fam-W: #59636e; --fam-W-soft: #f2f2f0;
+  --fam-C: #59636e; --fam-C-soft: #f2f2f0;
+  --fam-R: #59636e; --fam-R-soft: #f2f2f0;
+  --fam-E: #59636e; --fam-E-soft: #f2f2f0;
+  --chart-mu: #b4bbc2; --chart-mb: #63707d; --chart-eu: #96b4cd; --chart-eb: #0969da;
+  --chart-ink: #1f2328; --chart-faint: #6e7781; --chart-grid: #d1d9e0;
+  --chart-ok: #38745a; --chart-gate: #aa8540; --chart-authority: #7a6b93; --chart-idle: #eaeef2;
+  --heat-0: #f6f8fa; --heat-1: #ddf4ff; --heat-2: #c0d5e7; --heat-3: #80a9cb; --heat-4: #0969da;
+  --syntax-keyword: #75548e; --syntax-string: #397253; --syntax-comment: #6e7781; --syntax-number: #0969da;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0d1117; --paper-raised: #0d1117; --paper-sunk: #151b23;
+  --ink: #f0f6fc; --ink-soft: #b1bac4; --ink-faint: #9198a1;
+  --rule: #3d444d; --rule-soft: #262c36;
+  --accent: #4493f8; --accent-soft: #122c4c;
+  --blueprint: #4493f8; --blueprint-soft: #122c4c;
+  --mint: #99c7ac; --mint-soft: #2c3a31;
+  --warn: #d5bb80; --warn-soft: #3d3729;
+  --danger: #e59b9b; --button: #e1e1d9; --button-hover: #f0f0e9; --button-text: #252523;
+  --fam-P: #b1bac4; --fam-P-soft: #2e2e2a;
+  --fam-W: #b1bac4; --fam-W-soft: #2e2e2a;
+  --fam-C: #b1bac4; --fam-C-soft: #2e2e2a;
+  --fam-R: #b1bac4; --fam-R-soft: #2e2e2a;
+  --fam-E: #b1bac4; --fam-E-soft: #2e2e2a;
+  --chart-mu: #767d84; --chart-mb: #c7cbd0; --chart-eu: #537b9e; --chart-eb: #4493f8;
+  --chart-ink: #f0f6fc; --chart-faint: #9198a1; --chart-grid: #3d444d;
+  --chart-ok: #99c7ac; --chart-gate: #d5bb80; --chart-authority: #b8a8cb; --chart-idle: #262c36;
+  --heat-0: #1f2328; --heat-1: #122c4c; --heat-2: #3b5770; --heat-3: #648bad; --heat-4: #4493f8;
+  --syntax-keyword: #c9aed9; --syntax-string: #a4c6a2; --syntax-comment: #9198a1; --syntax-number: #4493f8;
+}
+[data-family="P"] { --fam: var(--fam-P); --fam-soft: var(--fam-P-soft); }
+[data-family="W"] { --fam: var(--fam-W); --fam-soft: var(--fam-W-soft); }
+[data-family="C"] { --fam: var(--fam-C); --fam-soft: var(--fam-C-soft); }
+[data-family="R"] { --fam: var(--fam-R); --fam-soft: var(--fam-R-soft); }
+[data-family="E"] { --fam: var(--fam-E); --fam-soft: var(--fam-E-soft); }

@@ -4,71 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>POHE H2 — Independent Human Review</title>
+<link rel="icon" href="../../assets/pohe-mark.svg" type="image/svg+xml">
 <style>
   :root {
-    --paper: #f3efe6;
-    --paper-2: #e9e3d6;
-    --paper-3: #ded6c5;
-    --ink: #1d1c19;
-    --muted: #6b665c;
-    --line: #cfc7b7;
-    --line-strong: #a99f8c;
-    --white: #fffdf8;
-    --accent: #a63a2b;
-    --accent-2: #1f6b66;
-    --gold: #a8751f;
-    --c-full: #1f6b66;
-    --c-partial: #a8751f;
-    --c-advisory: #5b6470;
-    --c-none: #8a8478;
-    --c-oos: #8c4a3f;
-    --c-unres: #6b4f8a;
-    --sans: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
-    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --paper: #fff; --paper-2: #f6f8fa; --paper-3: #eaeef2;
+    --ink: #1f2328; --muted: #59636e; --line: #d1d9e0; --line-strong: #b7c0ca;
+    --white: #fff; --accent: #0969da; --accent-2: #0969da; --gold: #8a6c30;
+    --c-full: #38745a; --c-partial: #8a6c30; --c-advisory: #59636e;
+    --c-none: #6e7781; --c-oos: #b54a4a; --c-unres: #7a6b93;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, sans-serif;
+    --serif: var(--sans);
     --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-    --shadow: 0 1px 0 rgba(29, 28, 25, .05), 0 12px 30px -24px rgba(29, 28, 25, .45);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #171614;
-      --paper-2: #211f1b;
-      --paper-3: #2b2823;
-      --ink: #eee8dc;
-      --muted: #a39b8c;
-      --line: #3a372f;
-      --line-strong: #575145;
-      --white: #1d1b18;
-      --accent: #d06a55;
-      --accent-2: #66b3aa;
-      --gold: #d2a24b;
-      --c-full: #66b3aa;
-      --c-partial: #d2a24b;
-      --c-advisory: #98a1ad;
-      --c-none: #9a9488;
-      --c-oos: #cf8072;
-      --c-unres: #b39bd0;
-      --shadow: 0 1px 0 rgba(0, 0, 0, .25), 0 14px 34px -26px rgba(0, 0, 0, .8);
-    }
+    --shadow: none; --nav-bg: #f6f8fa; --nav-active: #eaeef2; --button: #1f2328; --button-text: #fff;
+    color-scheme: light;
   }
   :root[data-theme="dark"] {
-    --paper: #171614;
-    --paper-2: #211f1b;
-    --paper-3: #2b2823;
-    --ink: #eee8dc;
-    --muted: #a39b8c;
-    --line: #3a372f;
-    --line-strong: #575145;
-    --white: #1d1b18;
-    --accent: #d06a55;
-    --accent-2: #66b3aa;
-    --gold: #d2a24b;
-    --c-full: #66b3aa;
-    --c-partial: #d2a24b;
-    --c-advisory: #98a1ad;
-    --c-none: #9a9488;
-    --c-oos: #cf8072;
-    --c-unres: #b39bd0;
-    --shadow: 0 1px 0 rgba(0, 0, 0, .25), 0 14px 34px -26px rgba(0, 0, 0, .8);
+    --paper: #0d1117; --paper-2: #151b23; --paper-3: #262c36;
+    --ink: #f0f6fc; --muted: #b1bac4; --line: #3d444d; --line-strong: #59636e;
+    --white: #0d1117; --accent: #4493f8; --accent-2: #4493f8; --gold: #d5bb80;
+    --c-full: #99c7ac; --c-partial: #d5bb80; --c-advisory: #b1bac4;
+    --c-none: #9198a1; --c-oos: #e59b9b; --c-unres: #b8a8cb;
+    --nav-bg: #151b23; --nav-active: #262c36; --button: #e1e1d9; --button-text: #252523;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -163,7 +120,7 @@
     box-shadow: var(--shadow); margin-bottom: 18px;
   }
   .reviewer-card label, .field > label {
-    display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    display: block; font-size: 11px; letter-spacing: 0; text-transform: none;
     color: var(--muted); margin: 8px 0 4px;
   }
   .reviewer-card input, .reviewer-card select {
@@ -173,7 +130,7 @@
   .reviewer-card .hint { margin: 8px 0 0; font-size: 11.5px; color: var(--muted); line-height: 1.4; }
   .rail-head {
     display: flex; justify-content: space-between; align-items: baseline;
-    font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+    font-size: 11px; letter-spacing: 0; text-transform: none; color: var(--muted);
     padding: 0 6px 8px;
   }
   .repo-item {
@@ -500,14 +457,115 @@
     .decision { border: 0; box-shadow: none; padding: 0; max-height: none; }
     body { background: #fff; color: #000; }
   }
+
+  /* Same engineering language as the pattern library; review remains self-contained. */
+  h1 { font-size: 29px; font-weight: 600; letter-spacing: -.03em; }
+  h2 { font-size: 20px; font-weight: 600; }
+  h3 { font-size: 16px; font-weight: 600; }
+  .welcome { max-width: 920px; }
+  .welcome h1 { max-width: none; }
+  .topbar { min-height: 64px; background: var(--paper); box-shadow: none; padding: 13px 22px; }
+  .brand { align-items: center; }
+  .review-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 17px; letter-spacing: .04em; }
+  .review-brand .mark { width: 30px; height: 30px; }
+  .mark-frame { fill: var(--ink); }
+  .mark-link { fill: none; stroke: var(--paper); stroke-width: 1.6; stroke-linecap: round; }
+  .mark-node { fill: var(--paper); }
+  .brand .sub { font: 9px var(--mono); letter-spacing: .03em; }
+  .shell { max-width: none; grid-template-columns: 278px minmax(0, 1fr); }
+  .rail { background: var(--nav-bg); color: var(--ink); border-color: var(--line); top: 64px; height: calc(100vh - 64px); }
+  .reviewer-card { box-shadow: none; border: 0; padding: 8px 6px 17px; background: transparent; border-bottom: 1px solid var(--line); }
+  .reviewer-card input { min-height: 36px; }
+  .repo-item { border-radius: 5px; margin-bottom: 3px; }
+  .repo-item .name { font-size: 12px; font-weight: 500; }
+  .repo-item.active { background: var(--nav-active); border-left-color: transparent; }
+  .rail .btn.teal, .btn.primary { background: var(--button); border-color: transparent; color: var(--button-text); }
+  .btn, .icon-btn, input[type="text"], textarea, select, .decision, dialog, .boundary { border-radius: 6px; }
+  .stat { border: 0; border-bottom: 1px solid var(--line); background: transparent; border-radius: 0; box-shadow: none; padding: 16px 0; }
+  .stat .num { font: 26px var(--mono); }
+  .stat .lbl { font: 11px var(--sans); letter-spacing: 0; text-transform: none; margin-top: 9px; }
+  .decision { box-shadow: none; }
+  .boundary { background: var(--paper-2); border-left-color: var(--line-strong); }
+  .rail-head { text-transform: none; letter-spacing: 0; font-family: var(--sans); }
+  .kicker { font: 12px var(--sans); color: var(--muted); letter-spacing: 0; text-transform: none; }
+  .progress { border: 0; border-radius: 3px; height: 4px; }
+  .progress-label { font: 9px var(--mono); letter-spacing: .03em; }
+  .ui-icon { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); padding: 0; }
+  .theme-toggle:hover { background: var(--paper-2); }
+  .theme-icon { display: none; }
+  [data-theme-preference="auto"] .theme-auto, [data-theme-preference="light"] .theme-light, [data-theme-preference="dark"] .theme-dark { display: block; }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    .rail { top: auto; position: static; max-height: 35vh; height: auto; }
+    .topbar { grid-template-columns: 1fr auto; padding: 12px 16px; }
+    .progress-wrap { grid-column: 1 / -1; }
+    .welcome-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat { padding: 12px; }
+    .stat .num { font-size: 23px; }
+    .stat .lbl { font-size: 8px; }
+  }
+  @media (max-width: 600px) {
+    h1, .welcome h1 { font-size: 24px; }
+    .btn, .theme-toggle { min-height: 38px; }
+    .lede { font-size: 14px; }
+  }
 </style>
+<script>
+/* Resolve before paint. One icon button cycles system → light → dark. */
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var media = window.matchMedia("(prefers-color-scheme: dark)");
+  var modes = ["auto", "light", "dark"];
+  var labels = { auto: "system", light: "light", dark: "dark" };
+  var preference = "auto";
+  try { preference = localStorage.getItem("pohe-theme") || "auto"; } catch (_) {}
+  if (!modes.includes(preference)) { preference = "auto"; }
+
+  function apply() {
+    var resolved = preference === "auto" ? (media.matches ? "dark" : "light") : preference;
+    root.dataset.theme = resolved;
+    root.dataset.themePreference = preference;
+    var button = document.getElementById("theme-toggle");
+    if (button) {
+      var next = modes[(modes.indexOf(preference) + 1) % modes.length];
+      var label = "Theme: " + labels[preference] + ". Switch to " + labels[next] + " theme";
+      button.setAttribute("aria-label", label);
+      button.setAttribute("title", label);
+    }
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) { meta.content = resolved === "dark" ? "#151b23" : "#f6f8fa"; }
+  }
+
+  apply();
+  if (media.addEventListener) { media.addEventListener("change", apply); }
+  window.addEventListener("storage", function (event) {
+    if (event.key === "pohe-theme" || event.key === null) {
+      preference = modes.includes(event.newValue) ? event.newValue : "auto";
+      apply();
+    }
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    apply();
+    var button = document.getElementById("theme-toggle");
+    if (!button) { return; }
+    button.addEventListener("click", function () {
+      preference = modes[(modes.indexOf(preference) + 1) % modes.length];
+      try { localStorage.setItem("pohe-theme", preference); } catch (_) {}
+      apply();
+    });
+  });
+})();
+
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="topbar">
   <div class="brand">
-    <span class="mark">POHE</span>
+    <a class="review-brand" href="../../" aria-label="Back to POHE catalog"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="mark-frame" x="1" y="1" width="30" height="30" rx="7"/><path class="mark-link" d="M10 9v14m12-14v14M10 16h12"/><g class="mark-node"><circle cx="10" cy="9" r="2"/><circle cx="10" cy="23" r="2"/><circle cx="22" cy="9" r="2"/><circle cx="22" cy="23" r="2"/></g></svg><span>POHE</span></a>
     <span class="sub">H2 · Independent human review</span>
   </div>
   <div class="progress-wrap" aria-live="polite">
@@ -520,7 +578,7 @@
     </div>
   </div>
   <div class="top-actions">
-    <button class="btn" id="btnTheme" title="Toggle light and dark theme">◐</button>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Theme: system. Switch to light theme" title="Theme: system. Switch to light theme"><svg class="ui-icon theme-icon theme-auto" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><svg class="ui-icon theme-icon theme-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><svg class="ui-icon theme-icon theme-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 13a8.5 8.5 0 0 1-9.5-9.5A8.5 8.5 0 1 0 20.5 13Z"/></svg></button>
     <button class="btn" id="btnHelp">Guide</button>
     <button class="btn primary" id="btnExport">Export</button>
   </div>
@@ -1565,12 +1623,6 @@
       renderAll();
       toast("Local draft cleared.");
     });
-    $("#btnTheme").addEventListener("click", () => {
-      const root = document.documentElement;
-      const next = root.dataset.theme === "dark" ? "light" : "dark";
-      root.dataset.theme = next;
-      try { localStorage.setItem(STORAGE_KEY + ":theme", next); } catch (error) { /* ignore */ }
-    });
     $$("[data-close]").forEach(button => {
       button.addEventListener("click", () => $("#" + button.dataset.close).close());
     });
@@ -1609,8 +1661,8 @@
   }
 
   try {
-    const theme = localStorage.getItem(STORAGE_KEY + ":theme");
-    if (theme) document.documentElement.dataset.theme = theme;
+    const theme = localStorage.getItem("pohe-theme");
+    if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
   } catch (error) { /* ignore */ }
 
   bindGlobal();

@@ -4,30 +4,40 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="P29 Harness mimicry and service hosting: proposed harness pattern pointcut, contract, variation, interaction model, and source evidence.">
-  <meta name="theme-color" content="#f2eee4">
+  <meta name="theme-color" content="#f6f8fa">
   <title>P29 · Harness mimicry and service hosting — POHE</title>
   <link rel="canonical" href="https://harness-pattern.github.io/pohe/patterns/P29/">
-  <link rel="stylesheet" href="../../assets/styles.css">
-  <script src="../../assets/site.js" defer></script>
+  <link rel="icon" href="../../assets/pohe-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/styles.css?v=20261121g">
+  <script src="../../assets/theme.js?v=20261121g"></script>
+  <script src="../../assets/site.js?v=20261121g" defer></script>
 </head>
-<body>
+<body class="reference-site">
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header class="site-header">
-  <a class="wordmark" href="../.././" aria-label="POHE initiative home">
-    <svg class="mark" viewBox="0 0 42 42" aria-hidden="true"><path d="M4 4h34v34H4zM4 14h34M14 4v34M14 14l12 12M26 14v12H14"/><circle cx="14" cy="14" r="2.5"/><circle cx="26" cy="26" r="2.5"/></svg>
-    <span><strong>POHE</strong><small>An open engineering initiative</small></span>
-  </a>
-  <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Index</span><i aria-hidden="true"></i></button>
+  <div class="header-inner">
+    <a class="wordmark" href="../.././" aria-label="POHE initiative home">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="mark-frame" x="1" y="1" width="30" height="30" rx="7"/><path class="mark-link" d="M10 9v14m12-14v14M10 16h12"/><g class="mark-node"><circle cx="10" cy="9" r="2"/><circle cx="10" cy="23" r="2"/><circle cx="22" cy="9" r="2"/><circle cx="22" cy="23" r="2"/></g></svg>
+      <span class="repo-owner">harness-pattern</span><span class="repo-divider">/</span><strong>pohe</strong>
+    </a>
+    <span class="repo-visibility">Public</span>
+    <div class="header-actions">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Theme: system. Switch to light theme" title="Theme: system. Switch to light theme"><svg class="ui-icon theme-icon theme-auto" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><svg class="ui-icon theme-icon theme-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><svg class="ui-icon theme-icon theme-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 13a8.5 8.5 0 0 1-9.5-9.5A8.5 8.5 0 1 0 20.5 13Z"/></svg></button>
+      <a class="source-button" href="https://github.com/harness-pattern/pohe" aria-label="POHE source repository"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 3h14v18H6a3 3 0 0 1-3-3V5a2 2 0 0 1 2-2Zm0 0v12h14M3 18a3 3 0 0 1 3-3"/><path d="M9 7h6m-6 3h4"/></svg>Source code</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Menu</span><i aria-hidden="true"></i></button>
+    </div>
+  </div>
   <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-    <a href="../../initiative.html">Initiative</a>
-    <a href="../.././#catalog">Catalog <sup>52</sup></a>
-    <a href="../../agent.html">Agent</a>
-    <a href="../../experiments.html">Experiments</a>
-    <a href="../../reviews/h2/">Review</a>
-    <a class="paper-link" href="../../paper.html">Paper</a>
-    <a class="personal-link" href="https://xhyccc.github.io/">About me <span aria-hidden="true">↗</span></a>
+    <a href="../../initiative.html"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v16M3 4c3-1 6-1 9 1 3-2 6-2 9-1v15c-3-1-6-1-9 2-3-3-6-3-9-2V4Z"/></svg>Initiative</a>
+    <a href="../.././#catalog" aria-current="page"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="6" height="6" rx="1.2"/><rect x="13" y="3" width="6" height="6" rx="1.2"/><rect x="3" y="13" width="6" height="6" rx="1.2"/><rect x="13" y="13" width="6" height="6" rx="1.2"/></svg>Catalog <sup>52</sup></a>
+    <a href="../../agent.html"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="m6.5 9 3 3-3 3m7-0.5h4"/></svg>Agent</a>
+    <a href="../../experiments.html"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 3h6m-5 0v7l-5.5 8.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 10V3M8 14h8"/></svg>Experiments</a>
+    <a href="../../reviews/h2/"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 1-2h4l1 2h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h3Z"/><path d="m8 13 2.5 2.5L16 10"/></svg>Review</a>
+    <a class="paper-link" href="../../paper.html"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5Zm0 0v5h5M9 12h6m-6 4h6"/></svg>Paper</a>
+    <a class="personal-link" href="https://xhyccc.github.io/"><svg class="ui-icon " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>About me <span aria-hidden="true">↗</span></a>
   </nav>
 </header>
+<div class="app-main">
 
 <main id="main-content" class="record-page" data-family="P">
   <div class="record-breadcrumb"><a href="../../#catalog">Catalog</a><span>/</span><span>P family</span><span>/</span><span>P29</span></div>
@@ -37,11 +47,9 @@
     <div class="record-stamp"><span>JOIN POINT</span><code>external_harness_compatibility</code><span>RECORD STATUS</span><strong>Candidate · v0.1.0</strong></div>
   </header>
 
-  <section class="record-section uml-section" id="uml-view"><div class="record-section-label"><span>01</span><h2>UML class view</h2><p>The proposed contract drawn as participant roles, received calls, and numbered dependencies.</p></div><figure class="interaction-figure"><a href="../../assets/diagrams/P29-class.svg" aria-label="Open full-size UML class view for P29"><img src="../../assets/diagrams/P29-class.svg" alt="UML class view for Harness mimicry and service hosting, showing participant roles, received calls, and analytical dependencies" loading="lazy"></a><figcaption><span>FIG. P29 / UML CLASS VIEW</span><div class="figure-links"><a href="../../assets/diagrams/P29-class.svg">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../assets/diagrams/P29.pdf" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
-
-  <section class="record-section interaction-section" id="interactions"><div class="record-section-label"><span>02</span><h2>Object interactions</h2><p>The same roles and calls as a class collaboration and a numbered message sequence.</p></div><figure class="interaction-figure"><a href="../../assets/interactions/P29.svg" aria-label="Open full-size object interaction diagram for P29"><img src="../../assets/interactions/P29.svg" alt="Object interaction diagram for Harness mimicry and service hosting, showing role collaboration and a numbered message sequence" loading="lazy"></a><figcaption><span>FIG. P29 / OBJECT INTERACTIONS</span><div class="figure-links"><a href="../../assets/interactions/P29.svg">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../assets/interactions/P29.pdf" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
-
-  <nav class="record-toc" aria-label="On this page"><span>On this record</span><a href="#uml-view">UML view</a><a href="#interactions">Object interactions</a><a href="#pointcut">Pointcut</a><a href="#contract">Contract</a><a href="#variation">Variation</a><a href="#prompt-code">Prompt + code</a><a href="#detection">Detection</a><a href="#repo-files">Repository files</a><a href="#evidence">Evidence</a></nav>
+  <div class="record-layout">
+  <nav class="record-toc" aria-label="On this page"><span>On this record</span><a href="#pointcut">Pointcut</a><a href="#contract">Contract</a><a href="#variation">Variation</a><a href="#prompt-code">Prompt + code</a><a href="#uml-view">UML view</a><a href="#interactions">Object interactions</a><a href="#detection">Detection</a><a href="#repo-files">Repository files</a><a href="#evidence">Evidence</a></nav>
+  <div class="record-content">
 
   <section class="record-section pointcut-section" id="pointcut"><div class="record-section-label"><span>03</span><h2>Pointcut</h2><p>Where the mechanism applies. All four dimensions belong to the proposed match, not just its vocabulary.</p></div><dl class="pointcut-grid"><div><dt>Context</dt><dd>One harness exposes or consumes an external agent-client or service interface.</dd></div><div><dt>Trigger</dt><dd>A remote client invokes the adapter or a hosted backend is selected.</dd></div><div><dt>Structure</dt><dd>Protocol adapter, identity, capability mapping, and service boundary.</dd></div><div><dt>Effect</dt><dd>The external protocol is preserved while semantics and permissions are translated explicitly.</dd></div></dl></section>
 
@@ -55,17 +63,22 @@
   <section class="record-section prompt-code-section" id="prompt-code"><div class="record-section-label"><span>06</span><h2>Prompt + code design</h2><p>An illustrative prompt and a small design sketch for the proposed contract. Names and APIs are invented; this is not a repository excerpt.</p></div>
     <div class="design-grid">
       <article class="design-card"><div class="design-card-head"><span>PROMPT SKETCH</span><button class="copy-button" type="button" data-copy="prompt-P29">Copy</button></div><pre class="prompt-block" id="prompt-P29"><code>Expose the harness through a declared compatibility protocol. Map capabilities explicitly, return protocol-shaped errors, and reject requests that the backend cannot satisfy.</code></pre></article>
-      <article class="design-card"><div class="design-card-head"><span>CODE DESIGN / PYTHON</span><button class="copy-button" type="button" data-copy="code-P29">Copy</button></div><pre class="code-block" id="code-P29"><code>def handle(request, backend, protocol):
-    if not protocol.supports(request.method):
-        return protocol.error(&quot;method_not_supported&quot;, request.id)
-    try:
+      <article class="design-card"><div class="design-card-head"><span>CODE DESIGN / PYTHON</span><button class="copy-button" type="button" data-copy="code-P29">Copy</button></div><pre class="code-block" id="code-P29"><code><span class="syntax-keyword">def</span> handle(request, backend, protocol):
+    <span class="syntax-keyword">if</span> <span class="syntax-keyword">not</span> protocol.supports(request.method):
+        <span class="syntax-keyword">return</span> protocol.error(<span class="syntax-string">&quot;method_not_supported&quot;</span>, request.id)
+    <span class="syntax-keyword">try</span>:
         result = backend.invoke(protocol.to_backend(request))
-    except BackendError as error:
-        return protocol.error(error.code, request.id, detail=error.detail)
-    return protocol.from_backend(result)</code></pre></article>
+    <span class="syntax-keyword">except</span> BackendError <span class="syntax-keyword">as</span> error:
+        <span class="syntax-keyword">return</span> protocol.error(error.code, request.id, detail=error.detail)
+    <span class="syntax-keyword">return</span> protocol.from_backend(result)</code></pre></article>
     </div>
     <p class="design-note"><strong>Illustrative design sketch.</strong> Compatibility is a contract over requests, results, and errors, not a renamed endpoint. This example is a teaching aid, not implementation evidence or a conformance claim.</p>
   </section>
+
+  <section class="record-section uml-section" id="uml-view"><div class="record-section-label"><span>01</span><h2>UML class view</h2><p>The proposed contract drawn as participant roles, received calls, and numbered dependencies.</p></div><figure class="interaction-figure"><a href="../../assets/diagrams/P29-class.svg" aria-label="Open full-size UML class view for P29"><img src="../../assets/diagrams/P29-class.svg" alt="UML class view for Harness mimicry and service hosting, showing participant roles, received calls, and analytical dependencies" loading="lazy"></a><figcaption><span>FIG. P29 / UML CLASS VIEW</span><div class="figure-links"><a href="../../assets/diagrams/P29-class.svg">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../assets/diagrams/P29.pdf" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
+
+  <section class="record-section interaction-section" id="interactions"><div class="record-section-label"><span>02</span><h2>Object interactions</h2><p>The same roles and calls as a class collaboration and a numbered message sequence.</p></div><figure class="interaction-figure"><a href="../../assets/interactions/P29.svg" aria-label="Open full-size object interaction diagram for P29"><img src="../../assets/interactions/P29.svg" alt="Object interaction diagram for Harness mimicry and service hosting, showing role collaboration and a numbered message sequence" loading="lazy"></a><figcaption><span>FIG. P29 / OBJECT INTERACTIONS</span><div class="figure-links"><a href="../../assets/interactions/P29.svg">Open full SVG <span aria-hidden="true">↗</span></a><a class="download-link" href="../../assets/interactions/P29.pdf" download>Download PDF <span aria-hidden="true">↓</span></a></div></figcaption></figure></section>
+
 
 
   <section class="record-section detection-section" id="detection"><div class="record-section-label"><span>07</span><h2>Detection &amp; matching</h2><p>The frozen rule that retrieves this record, the canonical source exemplar, and the control that should stay unmatched.</p></div>
@@ -84,6 +97,9 @@
 
   <section class="record-section evidence-section" id="evidence"><div class="record-section-label"><span>09</span><h2>Evidence & provenance</h2><p>Each layer answers a different question. Do not substitute retrieval for review.</p></div><div class="evidence-content"><div class="evidence-status"><span class="status-mark"></span><h3>Source-located exemplar</h3><p>A concrete source anchor is available for this proposed record. It is one exemplar, not evidence that all repositories—or every contract field—conform.</p><p class="review-note"><strong>Review boundary:</strong> this candidate and its specification come from an AI-assisted study. Independent human validation remains open.</p></div><div class="coverage-figure"><span>ANY-EVIDENCE FAMILY COVERAGE</span><strong>29<i>/36</i></strong><div class="coverage-bar" aria-hidden="true"><i style="width:80.6%"></i></div><p>80.6% of repository families in the frozen panel have at least one current cue, historical cue, or canonical source layer. <strong>This is not confirmed prevalence.</strong></p><small>Current lexical-cue repositories: 31 / 41</small></div></div><div class="anchors"><div class="source-anchor"><span class="anchor-kind">Canonical source anchor</span><a class="repo-name" href="https://github.com/OpenHands/software-agent-sdk/blob/5c524ad65d8164bf0a967bf5a4dbe3c3eb62253d/openhands-sdk/openhands/sdk/agent/acp_agent.py#L1815">OpenHands/software-agent-sdk <span aria-hidden="true">↗</span></a><code class="commit">5c524ad65d81</code><a class="locator" href="https://github.com/OpenHands/software-agent-sdk/blob/5c524ad65d8164bf0a967bf5a4dbe3c3eb62253d/openhands-sdk/openhands/sdk/agent/acp_agent.py#L1815"><code>openhands-sdk/openhands/sdk/agent/acp_agent.py:1815</code></a><div class="support-line"><span>Supporting surface</span><a href="https://github.com/OpenHands/software-agent-sdk/blob/5c524ad65d8164bf0a967bf5a4dbe3c3eb62253d/tests/sdk/agent/test_acp_agent.py#L1"><code>tests/sdk/agent/test_acp_agent.py:1</code></a></div><p>ACP-compatible agent hosting and external harness adaptation.</p></div></div><details class="retrieval-cue"><summary>Exploratory retrieval cue <span>Regex / v0.1.0</span></summary><div><code>(?i)\b(?:mimic(?:ry)?|emulat(?:e|ion)|ACP[_-]?client|agent[_-]?client[_-]?protocol)\b</code><p>This expression is a discovery instrument only. A match is a retrieval cue—not a confirmed implementation, pointcut match, or contract proof.</p></div></details></section>
 
+  </div>
+  </div>
+
   <nav class="record-pagination" aria-label="Adjacent pattern records"><a class="previous-record" href="../P28/"><span>← Previous record</span><strong>P28</strong></a><a href="../../#catalog" class="all-records">All 52</a><a class="next-record" href="../W01/"><span>Next record →</span><strong>W01</strong></a></nav>
 </main>
 <footer class="site-footer">
@@ -92,5 +108,6 @@
   <div class="footer-links"><a href="../../initiative.html">About the initiative</a><a href="../../method.html#evidence-key">How to read the evidence</a><a href="../../method.html#colophon">Colophon</a><a href="https://github.com/harness-pattern/pohe">GitHub</a></div>
   <p class="footer-disclosure">Analytical diagrams, prompt sketches, and code designs describe proposed contracts. They are not observed traces, repository class declarations, or evidence that any implementation conforms.</p>
 </footer>
+</div>
 </body>
 </html>

@@ -188,7 +188,7 @@ class SiteIntegrityTests(unittest.TestCase):
         text, parser = parse_document(ROOT / "experiments.html")
         self.assertTrue(parser.has_main)
         for phrase in (
-            "Two runs.",
+            "Harness evolution experiments",
             "The frozen 2×2 run.",
             "Making the interaction estimable.",
             "Enforcement supported",
@@ -215,7 +215,7 @@ class SiteIntegrityTests(unittest.TestCase):
         self.assertIn("A² / THE TAXONOMY", text)
         self.assertIn("Pattern-Oriented", text)
         self.assertIn("Harness Engineering", text)
-        self.assertIn("Design needs Patterns, when Agentic AI meets OOD", text)
+        self.assertIn("Engineering reference", text)
         for family in ("P", "W", "C", "R", "E"):
             self.assertIn(f'value="{family}"', text)
         for activity in ("A1", "A2", "A3"):
@@ -412,6 +412,7 @@ class SiteIntegrityTests(unittest.TestCase):
                 continue
             with self.subTest(page=page.relative_to(ROOT)):
                 text = page.read_text(encoding="utf-8")
+                text = re.sub(r"<svg\b.*?</svg>", "", text, flags=re.S)
                 match = re.search(r'<nav class="site-nav".*?</nav>', text, re.S)
                 self.assertIsNotNone(match)
                 labels = []
@@ -459,7 +460,7 @@ class SiteIntegrityTests(unittest.TestCase):
         for relative in (
             ".nojekyll", ".github/workflows/pages.yml", "README.md",
             "scripts/generate_site.py", "scripts/pattern_examples.py",
-            "assets/styles.css", "assets/site.js",
+            "assets/styles.css", "assets/tokens.css", "assets/theme.js", "assets/site.js", "assets/pohe-mark.svg",
         ):
             self.assertTrue((ROOT / relative).is_file(), relative)
         script = (ROOT / "assets/site.js").read_text(encoding="utf-8")
@@ -487,6 +488,26 @@ class SiteIntegrityTests(unittest.TestCase):
                 self.assertIn(example["note"], page)
                 self.assertIn(example["prompt"].splitlines()[0], page)
 
+    def test_highlighted_python_preserves_exact_source(self) -> None:
+        import sys
+        sys.dont_write_bytecode = True
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from generate_site import EXAMPLES, highlight_python
+
+        class PlainText(HTMLParser):
+            def __init__(self):
+                super().__init__(convert_charrefs=True)
+                self.parts = []
+
+            def handle_data(self, data):
+                self.parts.append(data)
+
+        for pattern_id, example in EXAMPLES.items():
+            with self.subTest(pattern=pattern_id):
+                parser = PlainText()
+                parser.feed(highlight_python(example["code"]))
+                self.assertEqual("".join(parser.parts), example["code"])
+
     def test_hero_a2_map_assets_and_links(self) -> None:
         svg = ROOT / "assets" / "a2" / "taxonomy-a2.svg"
         pdf = ROOT / "assets" / "a2" / "taxonomy-a2.pdf"
@@ -495,7 +516,8 @@ class SiteIntegrityTests(unittest.TestCase):
         self.assertIn("<svg", svg.read_text(encoding="utf-8")[:400])
         self.assertEqual(pdf.read_bytes()[:4], b"%PDF")
         text = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn('id="a2-map"', text)
+        self.assertIn('<section class="framework-section" id="a2-map"', text)
+        self.assertLess(text.index('id="a2-map"'), text.index('id="catalog"'))
         self.assertIn('class="hero-map"', text)
         self.assertIn("assets/a2/taxonomy-a2.svg", text)
         self.assertIn("assets/a2/taxonomy-a2.pdf", text)

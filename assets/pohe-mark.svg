@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title id="title">POHE — connected responsibilities within a boundary</title>
+  <rect x="1" y="1" width="30" height="30" rx="7" fill="#373733"/>
+  <path d="M10 9v14m12-14v14M10 16h12" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+  <g fill="#ffffff"><circle cx="10" cy="9" r="2"/><circle cx="10" cy="23" r="2"/><circle cx="22" cy="9" r="2"/><circle cx="22" cy="23" r="2"/></g>
+</svg>

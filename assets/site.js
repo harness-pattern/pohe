@@ -49,8 +49,13 @@
         toggle.focus();
       }
     });
+    document.addEventListener("click", function (event) {
+      if (toggle.getAttribute("aria-expanded") === "true" && !nav.contains(event.target) && !toggle.contains(event.target)) {
+        setOpen(false);
+      }
+    });
     window.addEventListener("resize", function () {
-      if (window.innerWidth > 780) {
+      if (window.innerWidth > 700) {
         setOpen(false);
       }
     });
@@ -71,6 +76,17 @@
     }
 
     var rows = Array.prototype.slice.call(index.querySelectorAll("[data-pattern]"));
+    document.addEventListener("keydown", function (event) {
+      var editing = event.target.closest("input, textarea, select, [contenteditable]");
+      if (event.key === "/" && !editing && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        event.preventDefault();
+        search.focus();
+      }
+    });
+    document.getElementById("filters").addEventListener("submit", function (event) {
+      event.preventDefault();
+      apply();
+    });
 
     function readUrl() {
       var params = new URLSearchParams(window.location.search);
@@ -156,6 +172,12 @@
         }
       });
 
+      document.querySelectorAll("[data-family-link]").forEach(function (link) {
+        var selected = link.getAttribute("data-family-link") === familyValue;
+        link.classList.toggle("is-selected", selected);
+        if (selected) { link.setAttribute("aria-current", "true"); }
+        else { link.removeAttribute("aria-current"); }
+      });
       if (results) {
         results.textContent = String(visible);
       }
@@ -195,11 +217,14 @@
     }
 
     document.querySelectorAll("[data-family-link]").forEach(function (link) {
-      link.addEventListener("click", function () {
+      link.addEventListener("click", function (event) {
+        event.preventDefault();
         family.value = link.getAttribute("data-family-link") || "all";
         apply();
         if (search) {
           search.focus({ preventScroll: true });
+          var catalog = document.getElementById("catalog");
+          window.scrollTo({ top: window.scrollY + catalog.getBoundingClientRect().top - 80, behavior: "auto" });
         }
       });
     });
